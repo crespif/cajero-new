@@ -11,6 +11,7 @@ export default async function ListInvoice({client} : {client: Cliente}) {
   const invoices = await fetchinvoices(client.idsuministro); 
 
   const handlePayLoad = (invoice: any) => async () => {
+
     // encriptar el icbte de invoice
     const icbte = invoice.idcbte ^ Number(process.env.NEXT_PUBLIC_HASH);
     
@@ -40,6 +41,7 @@ export default async function ListInvoice({client} : {client: Cliente}) {
                       <CreditCardIcon className="w-6 h-6 text-white mr-1 " />
                       Pagar
                     </button>
+
                     <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600">
                       <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
                       Cupon de pago

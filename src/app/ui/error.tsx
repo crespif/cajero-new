@@ -15,7 +15,7 @@ export default function Error() {
         </svg>
         <div>
           <h1>Hubo un error con la plataforma de pago</h1>
-          <p>Por favor, reintente en unos minutos</p>
+          <p>Disculpe las molestias, reintente en unos minutos</p>
         </div>
       </div> 
       <button className="bg-blue-500 p-2 text-white rounded-md flex items-center hover:bg-blue-400" onClick={() => router.back()}>

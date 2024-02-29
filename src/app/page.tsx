@@ -12,21 +12,6 @@ export default function Home() {
     setDoc(e.target.value);
   }
 
-  const checkURL = async () => {
-    try {
-      const response = await fetch('https://www.celtatsas.com.ar/sucursalvirtual/fac/2/00090977FAC20B00661457.pdf');
-      if (response.status === 200) {
-        console.log("200");
-      } else {
-        console.log("400");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  console.log(checkURL());
-
   return (
     <main className="flex flex-col items-center justify-between p-10">
       

@@ -3,8 +3,12 @@ import { revalidateTag } from "next/cache";
 export async function fetchClient(id: number) {
   try {
     const response = await fetch(`http://200.45.235.121:3000/suministro/dni/${id}`)
-    const data = await response.json()
-    return data
+    if (response.status === 200) {
+      const data = await response.json()
+      return data
+    } else {
+      return [];
+    }
   } catch (error) {
     console.error(error);
   }
@@ -60,6 +64,7 @@ export async function session(){
 
 export async function payment(sesion: any, data: any) {
   data = data[0];
+
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}`, {
       method: "POST",
@@ -73,8 +78,8 @@ export async function payment(sesion: any, data: any) {
         "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
         "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
         "Importe": parseFloat(data.srv_saldo),
-        "URL_OK": `https://google.com.ar`,
-        "URL_ERROR": `https://glider.com.ar`,
+        "URL_OK": `http://www.google.com.ar`,
+        "URL_ERROR": `http://www.google.com.ar`,
         "IdReferenciaOperacion": `425`,
         "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${data.srv_saldo}`}]
       }),
@@ -86,4 +91,27 @@ export async function payment(sesion: any, data: any) {
     console.error(error);
     return error;
   }
+}
+
+export async function CheckPay(idResultado: string, IdReferenciaOperacion: string): Promise<boolean>{
+
+  const sesion = await session();
+
+  if (!sesion.access_token) {
+    return false;
+  }
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}?IdResultado=${idResultado}&IdReferenciaOperacion=${IdReferenciaOperacion}`, {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": `${sesion.token_type} ${sesion.access_token}`,
+    },
+    cache: "no-cache",
+  });
+  const data = await res.json();
+  return data;
+
+  
 }
