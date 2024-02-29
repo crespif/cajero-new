@@ -2,9 +2,9 @@ import { revalidateTag } from "next/cache";
 
 export async function fetchClient(id: number) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/suministro/dni/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${id}`)
     if (response.status === 200) {
-      const data = await response.json()
+      const data = await response.json();
       return data
     } else {
       return [];
