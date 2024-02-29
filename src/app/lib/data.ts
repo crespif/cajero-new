@@ -2,7 +2,7 @@ import { revalidateTag } from "next/cache";
 
 export async function fetchClient(id: number) {
   try {
-    const response = await fetch(`http://200.45.235.121:3000/suministro/dni/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/suministro/dni/${id}`)
     if (response.status === 200) {
       const data = await response.json()
       return data
@@ -17,7 +17,7 @@ export async function fetchClient(id: number) {
 
 export async function fetchinvoices(id: number) {
   try {
-    const response = await fetch(`http://200.45.235.121:3000/factura/suministro/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/suministro/${id}`)
     const data = await response.json()
     return data
   } catch (error) {
@@ -28,7 +28,7 @@ export async function fetchinvoices(id: number) {
 
 export async function fetchinvoice(id: number) {
   try {
-    const response = await fetch(`http://200.45.235.121:3000/factura/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/${id}`)
     const data = await response.json()
     return data
   }
