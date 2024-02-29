@@ -1,12 +1,12 @@
 'use client'
+
 import Link from 'next/link'
-import Logo from './ui/logo'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
 export default function Home() {
 
-  const [doc, setDoc] = useState('');
+  const [doc, setDoc] = useState('10');
 
   const handleChange = (e: any) => {
     setDoc(e.target.value);
@@ -30,7 +30,7 @@ export default function Home() {
             onChange={handleChange} 
             required
           />
-          <Link href={`dashboard/${doc}`}className="flex items-center gap-2 self-start rounded-lg bg-blue-500 py-2 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base m-auto">
+          <Link href={`dashboard/${doc}`} className="flex items-center gap-2 self-start rounded-lg bg-blue-500 py-2 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base m-auto">
             <MagnifyingGlassIcon className='w-5' />
             <span>Buscar</span>
           </Link>
