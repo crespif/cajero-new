@@ -38,9 +38,9 @@ export default function SelectSumin({ clientes }: { clientes: Cliente[] }) {
           } */}
         </div>
       </div>
-      <Suspense fallback={<ListSkeleton />}>
+     {/*  <Suspense fallback={<ListSkeleton />}>
         <ListInvoice client={client} />
-      </Suspense>
+      </Suspense> */}
     </>
   )    
 }
