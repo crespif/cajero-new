@@ -9,6 +9,7 @@ export default function Home() {
   const [doc, setDoc] = useState('10');
 
   const handleChange = (e: any) => {
+    e.preventDefault();
     setDoc(e.target.value);
   }
 
