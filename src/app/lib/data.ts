@@ -17,9 +17,13 @@ export async function fetchClient(id: number) {
 
 export async function fetchinvoices(id: number) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/suministro/${id}`)
-    const data = await response.json()
-    return data
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suministro/${id}`)
+    if (response.status === 200) {
+      const data = await response.json();
+      return data
+    } else {
+      return [];
+    }
   } catch (error) {
     console.error(error);
   }
