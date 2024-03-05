@@ -32,7 +32,7 @@ export async function fetchinvoices(id: number) {
 
 export async function fetchinvoice(id: number) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/factura/${id}`)
     const data = await response.json()
     return data
   }

@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex h-screen flex-col items-center justify-between p-5 bg-gray-100 overflow-hidden` } >
+      <body className={`${inter.className} flex h-screen flex-col items-center justify-between bg-gray-100 overflow-hidden` } >
         <Header />
         {children}
         <Footer />

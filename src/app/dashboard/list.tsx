@@ -5,6 +5,7 @@ import { DocumentTextIcon, CreditCardIcon, DocumentArrowDownIcon, PrinterIcon, E
 import Link from 'next/link';
 
 
+
 export default async function ListInvoice({client} : {client: Cliente}) {
  
   const router = useRouter();
@@ -17,6 +18,29 @@ export default async function ListInvoice({client} : {client: Cliente}) {
     
     router.push(`/pay/${icbte}`);
    
+  }
+
+  const handleLinkClick = (invoice: any) => {
+
+    const factura = {
+      idsuministro: client.idsuministro,
+      cod_suministro: client.cod_suministro,
+      idtipo_srv: invoice.idtipo_srv,
+      idcbte: invoice.idcbte,
+      srv_saldo: invoice.srv_saldo,
+      nombre: invoice.nombre,
+      domicilio_sumin: invoice.domicilio_sumin,
+      idsucursal: invoice.idsucursal,
+      letra: invoice.letra_cbte,
+      nrocbte: invoice.nrocbte
+    };
+
+    /* codificador */
+    const facturaString = JSON.stringify(factura);
+    const facturaBase64 = btoa(facturaString);
+    const facturaEncoded = encodeURIComponent(facturaBase64);
+    window.open(`/dashboard/factura?cupon=${facturaEncoded}`, '_blank');
+
   }
 
 
@@ -42,10 +66,33 @@ export default async function ListInvoice({client} : {client: Cliente}) {
                       Pagar
                     </button>
 
-                    <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600">
+                    {/* <Link 
+                      className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600"
+                      href={{
+                        pathname: `/dashboard/factura`,
+                        query: {
+                          factura: JSON.stringify({
+                            idsuministro: client.idsuministro,
+                            cod_suministro: client.cod_suministro,
+                            idtipo_srv: invoice.idtipo_srv,
+                            idcbte: invoice.idcbte,
+                            srv_saldo: invoice.srv_saldo,
+                            nombre: invoice.nombre,
+                            domicilio_sumin: invoice.domicilio_sumin,
+                            idsucursal: invoice.idsucursal,
+                            letra: invoice.letra_cbte,
+                            nrocbte: invoice.nrocbte
+                          })
+                        }
+                      }}
+                    >
                       <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
                       Cupon de pago
-                    </button>
+                    </Link> */}
+                    <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
+                      <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
+                      Cupon de pago
+                    </button> 
                   </>
                 }
                 

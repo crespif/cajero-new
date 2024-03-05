@@ -14,7 +14,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-between p-10">
+    <main className="flex flex-col items-center justify-between p-4">
       
       <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800">
