@@ -1,7 +1,10 @@
 export async function GET(req: Request, { params } : { params: { id: string }}) {
   const id = params.id;
   try {
-     const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/suministro/${id}`);
+     const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL_CELTA}/factura/suministro/${id}`,
+     {
+      cache: "no-store",
+     });
      const data = await response.json();
      return  new Response(
        JSON.stringify(data),

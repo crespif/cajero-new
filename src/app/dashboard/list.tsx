@@ -65,30 +65,6 @@ export default async function ListInvoice({client} : {client: Cliente}) {
                       <CreditCardIcon className="w-6 h-6 text-white mr-1 " />
                       Pagar
                     </button>
-
-                    {/* <Link 
-                      className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600"
-                      href={{
-                        pathname: `/dashboard/factura`,
-                        query: {
-                          factura: JSON.stringify({
-                            idsuministro: client.idsuministro,
-                            cod_suministro: client.cod_suministro,
-                            idtipo_srv: invoice.idtipo_srv,
-                            idcbte: invoice.idcbte,
-                            srv_saldo: invoice.srv_saldo,
-                            nombre: invoice.nombre,
-                            domicilio_sumin: invoice.domicilio_sumin,
-                            idsucursal: invoice.idsucursal,
-                            letra: invoice.letra_cbte,
-                            nrocbte: invoice.nrocbte
-                          })
-                        }
-                      }}
-                    >
-                      <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
-                      Cupon de pago
-                    </Link> */}
                     <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
                       <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
                       Cupon de pago
