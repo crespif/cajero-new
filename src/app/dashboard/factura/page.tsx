@@ -2,6 +2,7 @@
 
 const { useState } = require("react");
 
+import MediosDePago from "@/app/ui/mediosdepago";
 import JsBarcode from "jsbarcode";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -16,7 +17,6 @@ export default function Factura() {
     const vencimiento = new Date();
     vencimiento.setDate(vencimiento.getDate() + 2);
     setVto(vencimiento.toLocaleDateString());
-    
   }, []);
 
   /* decodificador */
@@ -67,10 +67,8 @@ export default function Factura() {
       <div className="w-full md:w-2/3">
         <div className="flex justify-between mb-2">
           <button
-            onClick={
-              () => window.print()
-            }
-            className="flex print:hidden border-2 rounded-md p-1 hover:bg-gray-200 m-auto"
+            onClick={() => window.print()}
+            className="text-xs md:text-lg flex items-center print:hidden border-2 rounded-md p-1 hover:bg-gray-200 m-auto"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +87,7 @@ export default function Factura() {
             Imprimir
           </button>
           <div
-            className="cursor-pointer print:hidden border-2 rounded-md p-1 hover:bg-gray-200"
+            className="cursor-pointer print:hidden border-2 rounded-md p-1 hover:bg-gray-200 mr-1"
             onClick={() => window.close()}
           >
             <span className="flex">
@@ -99,7 +97,7 @@ export default function Factura() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-6 h-6 "
               >
                 <path
                   strokeLinecap="round"
@@ -107,12 +105,11 @@ export default function Factura() {
                   d="M6 18 18 6M6 6l12 12"
                 />
               </svg>
-              Cerrar
             </span>
           </div>
         </div>
 
-        <div className="bg-white border-dashed border-2 border-black-600  p-2 print:mt-4">
+        <div className="bg-white border-dashed border-2 border-black-600 p-2 print:mt-4 mb-4">
           <div className="flex items-center mb-2">
             <div className="flex-shrink-0">
               <img src="/logo.png" className="h-15 w-14" />
@@ -158,6 +155,10 @@ export default function Factura() {
             *IMPORTANTE: Este Cupón de pago vence el día {vto}. Con
             posterioridad a esa fecha, deberás imprimir un nuevo comprobante
           </p>
+        </div>
+
+        <div className="print:hidden text-center text-xs">
+          <MediosDePago />
         </div>
       </div>
     </>
