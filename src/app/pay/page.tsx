@@ -29,12 +29,4 @@ export default async function PayStatus({
   }
 
 
-  
-  
-
-  return (
-    <div>
-      <h1>Obteniendo información del pago...</h1>
-    </div>
-  );
 }
