@@ -11,12 +11,21 @@ export default async function PayStatus({
   };
 }) {
 
-  if (cookies().get(`h${searchParams?.idcbte}`) == undefined) {
-    console.log("error");
-    redirect("/");
+  const estadoPago =  async() => {
+    console.log(searchParams);
   }
 
   console.log(searchParams);
+
+  if (cookies().get(`h${searchParams?.idcbte}`) == undefined) {
+    console.log("error");
+    redirect("/");
+  } else {
+    estadoPago();
+  }
+
+
+  
   
 
   return (
