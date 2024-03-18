@@ -83,8 +83,8 @@ export async function payment(sesion: any, data: any, fc: any) {
         "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
         "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
         "Importe": parseFloat(data.srv_saldo),
-        "URL_OK": `http://www.google.com.ar/?idcbte=${fc}`,
-        "URL_ERROR": `http://www.google.com.ar`,
+        "URL_OK": `https://cajero-new.vercel.app/?idcbte=${fc}`,
+        "URL_ERROR": `https://cajero-new.vercel.app`,
         "IdReferenciaOperacion": `425`,
         "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${data.srv_saldo}`}]
       }),
