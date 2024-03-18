@@ -98,7 +98,7 @@ export async function payment(sesion: any, data: any, fc: any) {
   }
 }
 
-export async function CheckPay(idResultado: string, IdReferenciaOperacion: string): Promise<boolean>{
+export async function CheckPay(idResultado: string, Hash: string): Promise<boolean>{
 
   const sesion = await session();
 
@@ -106,7 +106,7 @@ export async function CheckPay(idResultado: string, IdReferenciaOperacion: strin
     return false;
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}?IdResultado=${idResultado}&IdReferenciaOperacion=${IdReferenciaOperacion}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}/${Hash}/${idResultado}`, {
     method: "GET",
     headers: {
       "Accept": "application/json",

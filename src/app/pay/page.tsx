@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { CheckPay } from "../lib/data";
 
 export default async function PayStatus({
   searchParams,
@@ -12,14 +13,17 @@ export default async function PayStatus({
 }) {
 
   const estadoPago =  async() => {
-    console.log(searchParams);
+    const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? '';
+    const idres = searchParams?.IdResultado ?? '';
+    const res = await CheckPay(idres, hash);
+    console.log(res);
   }
 
   console.log(searchParams);
 
   if (cookies().get(`h${searchParams?.idcbte}`) == undefined) {
     console.log("error");
-    redirect("/");
+    //redirect("/");
   } else {
     estadoPago();
   }
