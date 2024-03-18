@@ -1,3 +1,4 @@
+
 import { fetchClient } from "@/app/lib/data"
 import { SelectSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from 'react';
@@ -5,10 +6,14 @@ import SelectSumin from "../select";
 import Link from "next/link";
 
 export default async function Dashboard({ params } : { params: {doc: number} }) {
-
+  
   const doc = params.doc;
+  
   try {
     const client = await fetchClient(doc);
+    if (client.length === 0) {
+      throw new Error('Cliente no encontrado');
+    }
     return (
       <>
         <div className="grow overflow-auto">

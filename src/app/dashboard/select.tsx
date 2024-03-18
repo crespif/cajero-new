@@ -8,6 +8,7 @@ import { ListSkeleton } from "../ui/skeletons";
 import ListInvoice from "./list";
 import Link from "next/link";
 
+
 export default function SelectSumin({ clientes }: { clientes: Cliente[] }) {
 
   const [client, setClient] = useState(clientes[0]);

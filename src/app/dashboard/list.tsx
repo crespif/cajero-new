@@ -3,6 +3,7 @@ import { fetchinvoices } from "../lib/data";
 import { Cliente } from "../lib/definitions";
 import { DocumentTextIcon, CreditCardIcon, DocumentArrowDownIcon, PrinterIcon, EyeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 
 
@@ -15,7 +16,6 @@ export default async function ListInvoice({client} : {client: Cliente}) {
 
     // encriptar el icbte de invoice
     const icbte = invoice.idcbte ^ Number(process.env.NEXT_PUBLIC_HASH);
-    
     router.push(`/pay/${icbte}`);
    
   }
@@ -59,6 +59,8 @@ export default async function ListInvoice({client} : {client: Cliente}) {
               </div>
               <div className="flex md:flex-row flex-col md:gap-2 gap-1 my-auto w-6/12 justify-end">
                 {
+                  (invoice.debito != 1 && (Date.parse(invoice.fecha_vto) <= Date.now())) &&
+                  (invoice.pago == null) &&
                   invoice.srv_saldo > 0 &&
                   <>
                     <button className="bg-blue-800 text-white rounded-md  text-xs flex items-center w-32 p-1  hover:bg-blue-600" onClick={handlePayLoad(invoice)}>
