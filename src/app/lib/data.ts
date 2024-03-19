@@ -45,7 +45,7 @@ export async function fetchinvoice(id: number) {
 export async function session(){
   try {
     const query = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_SIRO_SESION_PRUEBA}`,
+      `${process.env.NEXT_PUBLIC_URL_SIRO_SESION_PRODUCCION}`,
       {
         method: "POST",
         headers: {
@@ -69,9 +69,8 @@ export async function session(){
 
 export async function payment(sesion: any, data: any, fc: any) {
   data = data[0];
-
   try {   
-    const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}`, {
+    const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",
       headers: {
         "Authorization": `${sesion.token_type} ${sesion.access_token}`,
@@ -90,15 +89,15 @@ export async function payment(sesion: any, data: any, fc: any) {
       }),
     });
     const response = await query.json();
+    
     return response;
     
   } catch (error) {
-    console.error(error);
     return error;
   }
 }
 
-export async function CheckPay(idResultado: string, Hash: string): Promise<boolean>{
+export async function CheckPay(idResultado: string, Hash: string) {
 
   const sesion = await session();
 
@@ -106,7 +105,7 @@ export async function CheckPay(idResultado: string, Hash: string): Promise<boole
     return false;
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRUEBA}/${Hash}/${idResultado}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${Hash}/${idResultado}`, {
     method: "GET",
     headers: {
       "Accept": "application/json",
