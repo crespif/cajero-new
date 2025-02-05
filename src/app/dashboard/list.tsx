@@ -63,14 +63,20 @@ export default async function ListInvoice({client} : {client: Cliente}) {
                   invoice.pago == null &&
                   invoice.srv_saldo > 0 &&
                   <>
-                    <button className="bg-blue-800 text-white rounded-md  text-xs flex items-center w-32 p-1  hover:bg-blue-600" onClick={handlePayLoad(invoice)}>
-                      <CreditCardIcon className="w-6 h-6 text-white mr-1 " />
-                      Pagar
-                    </button>
-                    <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
-                      <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
-                      Cupon de pago
-                    </button> 
+                    {
+                      (invoice.srv_saldo < 999999.99) &&
+                      <button className="bg-blue-800 text-white rounded-md  text-xs flex items-center w-32 p-1  hover:bg-blue-600" onClick={handlePayLoad(invoice)}>
+                        <CreditCardIcon className="w-6 h-6 text-white mr-1 " />
+                        Pagar
+                      </button>
+                    }
+                    {
+                      (invoice.srv_saldo) < 99999.99 && 
+                      <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
+                        <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
+                        Cupon de pago
+                      </button> 
+                    }
                   </>
                 }
                 

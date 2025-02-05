@@ -82,14 +82,23 @@ export async function payment(sesion: any, data: any, fc: any) {
         "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
         "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
         "Importe": parseFloat(data.srv_saldo),
-        "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${fc}`,
-        "URL_ERROR": `https://cajero-new.vercel.app/pay`,
+        "URL_OK": `https://cajero-new.vercel.app//pay?idcbte=${fc}`,
+        "URL_ERROR": `https://cajero-new.vercel.app//pay`,
         "IdReferenciaOperacion": `425`,
         "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${data.srv_saldo}`}]
       }),
+     /*  body: JSON.stringify({
+        "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5150058293`,
+        "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
+        "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
+        "Importe": 998.50,
+        "URL_OK": `https://cajero-new.vercel.app//pay?idcbte=${fc}`,
+        "URL_ERROR": `https://cajero-new.vercel.app//pay`,
+        "IdReferenciaOperacion": `425`,
+        "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': 998.50}]
+      }), */
     });
     const response = await query.json();
-    
     return response;
     
   } catch (error) {

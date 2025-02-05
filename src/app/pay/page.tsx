@@ -11,13 +11,13 @@ export default async function PayStatus({
     IdReferenciaOperacion: number;
   };
 }) {
-
   async function estadoPago() {
-    const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? '';
-    const idres = searchParams?.IdResultado ?? '';
+    const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
+    const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    
+
     if (res.PagoExitoso) {
+      
       return true;
       /* 
         - TODO guardar pago en la base de datos 
@@ -57,9 +57,30 @@ export default async function PayStatus({
             },
             Rendicion: null
           }
+
+          {
+            PagoExitoso: false,
+            MensajeResultado: 'No es posible conectar con el servidor remoto',
+            FechaOperacion: null,
+            FechaRegistro: '2025-02-04T10:46:55.88',
+            IdOperacion: '0565331b-f76f-48ad-be04-2d45105a1638',
+            Estado: 'ERROR',
+            idReferenciaOperacion: '425',
+            Request: {
+              nro_cliente_empresa: '0111342795150058293',
+              nro_comprobante: '00000000000011134279',
+              Concepto: 'Factura CELTA Nro 0020 00014392',
+              Importe: 998.5,
+              URL_OK: 'https://www.google.com.ar/pay?idcbte=1150608551',
+              URL_ERROR: 'https://www.google.com.ar/pay',
+              IdReferenciaOperacion: '425',
+              Detalle: [ [Object] ]
+            },
+            Rendicion: null
+          }
        */
     } else {
-      return false
+      return false;
     }
   }
 
@@ -68,33 +89,65 @@ export default async function PayStatus({
     //redirect("/");
   } else {
     const res = await estadoPago();
-    if (res) {    
+    if (res) {
       return (
         <>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="green"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="w-10 h-10"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+
           <h1>El pago se ha realizado con éxito</h1>
-          <h2>IdResultado: {searchParams?.IdResultado}</h2>
-          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2>
+          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
+          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
+          <Link
+            href={"/"}
+            className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
+          >
+            Volver
+          </Link>
         </>
-      )
+      );
     } else {
       return (
         <>
           <div className="flex items-center flex-col">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="yellow"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-10 h-10"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+              />
             </svg>
             <h1>Error en el pago / Pago cancelado</h1>
           </div>
           {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
           <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
-          <Link href={"/"} className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2">
+          <Link
+            href={"/"}
+            className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
+          >
             Volver
           </Link>
         </>
-      )
+      );
     }
   }
-
-
-
 }

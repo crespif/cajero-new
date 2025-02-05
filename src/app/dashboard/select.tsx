@@ -1,13 +1,10 @@
 'use client'
-import { TvIcon } from "@heroicons/react/16/solid";
-import { BoltIcon } from "@heroicons/react/20/solid";
+
 import { Cliente } from "../lib/definitions";
 import {useState} from 'react';
 import { Suspense } from 'react';
 import { ListSkeleton } from "../ui/skeletons";
 import ListInvoice from "./list";
-import Link from "next/link";
-
 
 export default function SelectSumin({ clientes }: { clientes: Cliente[] }) {
 
