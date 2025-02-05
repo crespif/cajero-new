@@ -17,7 +17,7 @@ export default async function Pay({params} : {params: {fc: number}}) {
     }
     const fact = await fetchinvoice(fc  ^ Number(process.env.NEXT_PUBLIC_HASH));
     const pago = await payment(sesion, fact, fc);
- 
+
     if (pago.Url) {
       return <Status Fc={fc} Url={pago.Url} Hash={pago.Hash} />
     } else {
