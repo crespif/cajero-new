@@ -17,7 +17,17 @@ export default async function PayStatus({
     const res = await CheckPay(idres, hash);
 
     if (res.PagoExitoso) {
-      
+      const resSave = await fetch(`/api/factura/pago`, {
+        method: 'POST',
+        body: JSON.stringify({
+          "idcbte": Number(res.Request.nro_comprobante),
+          "fecha_pago": new Date(res.FechaRegistro),
+          "idoperacion": res.IdOperacion,
+          "importe": Number(res.Request.Importe),
+          "hash": hash,
+        })
+      });
+      if (resSave.ok) await fetch(`/api/factura/corte/${searchParams?.idcbte}`);
       return true;
       /* 
         - TODO guardar pago en la base de datos 
