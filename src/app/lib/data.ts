@@ -81,11 +81,11 @@ export async function payment(sesion: any, data: any, fc: any) {
         "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5120185697`,
         "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
         "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
-        "Importe": parseFloat(data.srv_saldo),
+        "Importe": parseFloat(data.srv_saldo).toFixed(2),
         "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${fc}`,
         "URL_ERROR": `https://cajero-new.vercel.app/pay`,
         "IdReferenciaOperacion": `425`,
-        "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${data.srv_saldo}`}]
+        "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${parseFloat(data.srv_saldo).toFixed(2)}`}]
       }),
      /*  body: JSON.stringify({
         "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5150058293`,
