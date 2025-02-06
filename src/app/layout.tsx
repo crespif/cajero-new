@@ -18,13 +18,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.ico" />       
       </head>
-      <body className={`${inter.className} flex h-[100dvh] flex-col items-center justify-between bg-gray-50 overflow-hidden` } >
+      <body className={`${inter.className} flex h-[100dvh] flex-col items-center justify-between bg-gray-50` } >
         <Header />
         {children}
         <Footer />
