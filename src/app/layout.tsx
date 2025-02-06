@@ -24,7 +24,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.ico" />       
       </head>
-      <body className={`${inter.className} flex h-screen flex-col items-center justify-between bg-gray-100 overflow-hidden` } >
+      <body className={`${inter.className} flex h-[100dvh] flex-col items-center justify-between bg-gray-50 overflow-hidden` } >
         <Header />
         {children}
         <Footer />

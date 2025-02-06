@@ -67,7 +67,7 @@ export async function session(){
   }
 }
 
-export async function payment(sesion: any, data: any, fc: any) {
+export async function payment(sesion: any, data: any) {
   data = data[0];
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
