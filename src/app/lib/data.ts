@@ -67,7 +67,7 @@ export async function session(){
   }
 }
 
-export async function payment(sesion: any, data: any) {
+export async function payment(sesion: any, data: any, fc: any) {
   data = data[0];
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
@@ -82,7 +82,7 @@ export async function payment(sesion: any, data: any) {
         "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
         "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
         "Importe": parseFloat(data.srv_saldo),
-        "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${data.idcbte}`,
+        "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${fc}`,
         "URL_ERROR": `https://cajero-new.vercel.app/pay`,
         "IdReferenciaOperacion": `425`,
         "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${data.srv_saldo}`}]

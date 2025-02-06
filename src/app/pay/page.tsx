@@ -26,7 +26,7 @@ export default async function PayStatus({
           "hash": hash,
         })
       });
-      if (resSave.ok) await fetch(`/api/factura/corte/${searchParams?.idcbte}`);
+      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`);
       return true;
       /* 
         - TODO guardar pago en la base de datos 
