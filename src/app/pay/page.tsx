@@ -15,7 +15,6 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-
     if (res.PagoExitoso) {
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
