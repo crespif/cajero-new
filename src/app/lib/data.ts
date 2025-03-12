@@ -1,5 +1,8 @@
-import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
+
+"use server"
+
+import { createClient } from "soap";
+import { Cliente, Factura } from "./definitions";
 
 export async function fetchClient(id: number) {
   try {
@@ -67,8 +70,8 @@ export async function session(){
   }
 }
 
-export async function payment(sesion: any, data: any, fc: any) {
-  data = data[0];
+export async function payment(sesion: any, data: Factura, fc: string) {
+  console.log(`Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}}`)
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",
@@ -78,14 +81,14 @@ export async function payment(sesion: any, data: any, fc: any) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5120185697`,
-        "nro_comprobante": `${(data.idcbte).toString().padStart(20,0)}`,
-        "Concepto": `Factura CELTA Nro ${(data.idsucursal).toString().padStart(4,0)} ${(data.nrocbte).toString().padStart(8,0)}`,
-        "Importe": parseFloat(data.srv_saldo).toFixed(2),
+        "nro_cliente_empresa": `${(data.PersonaNro).toString().padStart(9,'0')}5120185697`,
+        "nro_comprobante": `${(data.FacturaID).toString().padStart(20,'0')}`,
+        "Concepto": `Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}`,
+        "Importe": (data.FacturaSal).toFixed(2),
         "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${fc}`,
         "URL_ERROR": `https://cajero-new.vercel.app/pay`,
         "IdReferenciaOperacion": `425`,
-        "Detalle": [{'Descripcion': `${data.cat_desc}`, 'Importe': `${parseFloat(data.srv_saldo).toFixed(2)}`}]
+        "Detalle": [{'Descripcion': `Suministro: ${data.CuentaNIS}, Factura: ${(data.FacturaID).slice(3,7)}-${(data.FacturaID).slice(7,15)}`, 'Importe': `${(data.FacturaSal).toFixed(2)}`}]
       }),
      /*  body: JSON.stringify({
         "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5150058293`,
@@ -127,4 +130,101 @@ export async function CheckPay(idResultado: string, Hash: string) {
   return data;
 
   
+}
+
+
+
+
+export async function getFacturas(doc: string): Promise<Factura[]> {
+
+  const SOAP_URL =
+  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
+
+  return new Promise((resolve, reject) => {
+    createClient(SOAP_URL, (err, client) => {
+      if (err) {
+        console.error("Error al crear el cliente SOAP:", err);
+        reject(new Error("Error al crear el cliente SOAP"));
+      } else {
+        client.WSCuentasBP.WSCuentasBPSoapPort.FACTURAS(
+          { Documento: `${doc}` },
+          (err: any, result: any) => {
+            if (err) {
+              console.error("Error en la solicitud SOAP:", err);
+              reject(new Error("Error en la solicitud SOAP"));
+            } else {
+              const facturas = result?.Sdtbpfac?.FacturasBP
+                ? result.Sdtbpfac.FacturasBP["FacturasBP.FacturasBPItem"] || []
+                : [];
+              resolve(facturas);
+            }
+          }
+        );
+      }
+    });
+  });
+}
+
+export async function getFacturaById(doc: string, id: string): Promise<Factura> {
+
+  const SOAP_URL =
+  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
+
+  return new Promise((resolve, reject) => {
+    createClient(SOAP_URL, (err, client) => {
+      if (err) {
+        console.error("Error al crear el cliente SOAP:", err);
+        reject(new Error("Error al crear el cliente SOAP"));
+      } else {
+        client.WSCuentasBP.WSCuentasBPSoapPort.FACTURAS(
+          { Documento: `${doc}` },
+          (err: any, result: any) => {
+            if (err) {
+              console.error("Error en la solicitud SOAP:", err);
+              reject(new Error("Error en la solicitud SOAP"));
+            } else {
+              const facturas = result?.Sdtbpfac?.FacturasBP
+                ? result.Sdtbpfac.FacturasBP["FacturasBP.FacturasBPItem"] || []
+                : [];
+              resolve(facturas.find((f: Factura) => f.FacturaID === id));
+            }
+          }
+        );
+      }
+    });
+  });
+}
+
+
+
+
+
+
+export async function getClientes(doc: number): Promise<Cliente[]> {
+  const SOAP_URL =
+  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
+
+  return new Promise((resolve, reject) => {
+    createClient(SOAP_URL, (err, client) => {
+      if (err) {
+        console.error("Error al crear el cliente SOAP:", err);
+        reject(new Error("Error al crear el cliente SOAP"));
+      } else {
+        client.WSCuentasBP.WSCuentasBPSoapPort.SUMINISTRO(
+          { Documento: `${doc}` },
+          (err: any, result: any) => {
+            if (err) {
+              console.error("Error en la solicitud SOAP:", err);
+              reject(new Error("Error en la solicitud SOAP"));
+            } else {
+              const cuentas = result?.Sdtbpcta?.CuentasBP
+                ? result.Sdtbpcta.CuentasBP["CuentasBP.CuentasBPItem"] || []
+                : [];
+              resolve(cuentas);
+            }
+          }
+        );
+      }
+    });
+  });
 }

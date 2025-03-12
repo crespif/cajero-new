@@ -1,23 +1,30 @@
- 
-import { redirect } from "next/navigation";
-import { fetchinvoice, payment, session } from "../../lib/data";
+
+import { redirect, useSearchParams } from "next/navigation";
+import { fetchinvoice, getFacturaById, payment, session } from "../../lib/data";
 import Error from "@/app/ui/error";
 import Status from "./status";
 import { cookies } from "next/headers";
+import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
-export default async function Pay({params} : {params: {fc: number}}) {
+export default async function Pay({params, searchParams} : {params: {fc: string, doc: string}, searchParams?: {[key: string] : string}}) {
 
   const fc = params.fc;
+  const doc = searchParams?.doc || '';;
   const sesion = await session();
+  const fact = await getFacturaById(doc, fc);
+  
   if (!sesion.access_token) {
     return <Error />
-  } else {    if (cookies().get(`h${fc}`)) {
-      //redirect(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${cookies().get(`h${fc}`)?.value}`);
+  } else {    
+    if (cookies().get(`h${fc}`)) {
       redirect(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${cookies().get(`h${fc}`)?.value}`);
     }
-    const fact = await fetchinvoice(fc  ^ Number(process.env.NEXT_PUBLIC_HASH));
+    
+    /* if (cookies().get(`h${fc}`)) {
+      redirect(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${cookies().get(`h${fc}`)?.value}`);
+    }
+    const fact = await fetchinvoice(fc  ^ Number(process.env.NEXT_PUBLIC_HASH));*/
     const pago = await payment(sesion, fact, fc);
-
     if (pago.Url) {
       return <Status Fc={fc} Url={pago.Url} Hash={pago.Hash} />
     } else {
@@ -25,7 +32,7 @@ export default async function Pay({params} : {params: {fc: number}}) {
         
         <Error />
       ) 
-    } 
+    }  
   } 
   
 } 

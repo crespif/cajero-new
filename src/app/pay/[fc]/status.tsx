@@ -4,7 +4,7 @@
 import { setCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 
-export default function Status( {Fc, Url, Hash} : {Fc: number, Url: string, Hash: string} ) {
+export default function Status( {Fc, Url, Hash} : {Fc: string, Url: string, Hash: string} ) {
 
   setCookie(`h${Fc}`, Hash, {maxAge: 60 * 15});
 

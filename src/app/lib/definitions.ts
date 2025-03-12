@@ -11,7 +11,7 @@ export type Suministro = {
 }
 
 
-export interface Cliente {
+/* export interface Cliente {
   idcliente: number;
   nrodocumento: string;
   idsuministro: number;
@@ -22,4 +22,31 @@ export interface Cliente {
   categoria: string;
   servicio: string;
   debito: boolean;
-}
+} */
+
+  export interface Cliente {
+    PersonaNro: number;
+    CuentaNro: number;
+    CuentaSrv: string;
+    CuentaDom: string;
+    CuentaDoc: string;
+    CuentaNom: string;
+    CuentaLoc: string;
+    CuentaNIS: string;
+    CuentaUnA: string;
+  }
+
+
+  export interface Factura {
+    FacturaID: string,
+    FacturaFE: string,
+    FacturaPer: number,
+    FacturaFV: string,
+    FacturaImp: number,
+    FacturaSal: number,
+    FacturaDA: string,
+    PersonaNro: number,
+    CuentaNro: number,
+    CuentaNIS: string,
+    CuentaUnA: string
+  }
