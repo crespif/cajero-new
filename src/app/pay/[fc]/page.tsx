@@ -1,10 +1,9 @@
 
-import { redirect, useSearchParams } from "next/navigation";
-import { fetchinvoice, getFacturaById, payment, session } from "../../lib/data";
+import { redirect } from "next/navigation";
+import { getFacturaById, payment, session } from "../../lib/data";
 import Error from "@/app/ui/error";
 import Status from "./status";
 import { cookies } from "next/headers";
-import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 export default async function Pay({params, searchParams} : {params: {fc: string, doc: string}, searchParams?: {[key: string] : string}}) {
 

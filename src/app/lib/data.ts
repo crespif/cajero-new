@@ -19,12 +19,12 @@ export async function fetchClient(id: number) {
 }
 
 
-export async function fetchinvoices(id: number) {
+export async function fetchinvoices(id: string) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suministro/${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suministro/${id}`);
     if (response.status === 200) {
       const data = await response.json();
-      return data
+      return data;
     } else {
       return [];
     }
@@ -71,7 +71,6 @@ export async function session(){
 }
 
 export async function payment(sesion: any, data: Factura, fc: string) {
-  console.log(`Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}}`)
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",
@@ -132,43 +131,9 @@ export async function CheckPay(idResultado: string, Hash: string) {
   
 }
 
-
-
-
-export async function getFacturas(doc: string): Promise<Factura[]> {
-
-  const SOAP_URL =
-  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
-
-  return new Promise((resolve, reject) => {
-    createClient(SOAP_URL, (err, client) => {
-      if (err) {
-        console.error("Error al crear el cliente SOAP:", err);
-        reject(new Error("Error al crear el cliente SOAP"));
-      } else {
-        client.WSCuentasBP.WSCuentasBPSoapPort.FACTURAS(
-          { Documento: `${doc}` },
-          (err: any, result: any) => {
-            if (err) {
-              console.error("Error en la solicitud SOAP:", err);
-              reject(new Error("Error en la solicitud SOAP"));
-            } else {
-              const facturas = result?.Sdtbpfac?.FacturasBP
-                ? result.Sdtbpfac.FacturasBP["FacturasBP.FacturasBPItem"] || []
-                : [];
-              resolve(facturas);
-            }
-          }
-        );
-      }
-    });
-  });
-}
-
 export async function getFacturaById(doc: string, id: string): Promise<Factura> {
 
-  const SOAP_URL =
-  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
+  const SOAP_URL = process.env.NEXT_PUBLIC_WS_GLM!;
 
   return new Promise((resolve, reject) => {
     createClient(SOAP_URL, (err, client) => {
@@ -187,40 +152,6 @@ export async function getFacturaById(doc: string, id: string): Promise<Factura> 
                 ? result.Sdtbpfac.FacturasBP["FacturasBP.FacturasBPItem"] || []
                 : [];
               resolve(facturas.find((f: Factura) => f.FacturaID === id));
-            }
-          }
-        );
-      }
-    });
-  });
-}
-
-
-
-
-
-
-export async function getClientes(doc: number): Promise<Cliente[]> {
-  const SOAP_URL =
-  "http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awscuentasbp?wsdl";
-
-  return new Promise((resolve, reject) => {
-    createClient(SOAP_URL, (err, client) => {
-      if (err) {
-        console.error("Error al crear el cliente SOAP:", err);
-        reject(new Error("Error al crear el cliente SOAP"));
-      } else {
-        client.WSCuentasBP.WSCuentasBPSoapPort.SUMINISTRO(
-          { Documento: `${doc}` },
-          (err: any, result: any) => {
-            if (err) {
-              console.error("Error en la solicitud SOAP:", err);
-              reject(new Error("Error en la solicitud SOAP"));
-            } else {
-              const cuentas = result?.Sdtbpcta?.CuentasBP
-                ? result.Sdtbpcta.CuentasBP["CuentasBP.CuentasBPItem"] || []
-                : [];
-              resolve(cuentas);
             }
           }
         );

@@ -2,7 +2,7 @@
 
 
 import { setCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function Status( {Fc, Url, Hash} : {Fc: string, Url: string, Hash: string} ) {
 

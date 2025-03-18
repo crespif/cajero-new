@@ -25,28 +25,29 @@ export default function Factura() {
   const fact = JSON.parse(facturaBase64);
 
   function barcode() {
-    let tipoSrv = fact.idtipo_srv == 1 ? "1" : "2";
-    let cliente = fact.idcbte.toString().padStart(8, 0);
+    const letraCbte = (fact.FacturaID).slice(2, 3) == "A" ? "1" : "2";
+    const nroCbte = `${(fact.FacturaID).slice(0, 2)}${letraCbte}${(fact.FacturaID).slice(3,7)}${(fact.FacturaID).slice(7,15)}`;
+    /* let cliente = (fact.FacturaID).padStart(15, '0'); */
     let fecha = new Date();
     fecha.setDate(fecha.getDate() + 2);
     //setVto(fecha);
     let strFecha = fecha.toISOString().slice(0, 10).replace(/-/g, "");
     strFecha = strFecha.substring(2, strFecha.length);
-    let importe = Number.parseFloat(fact.srv_saldo)
+    let importe = (fact.FacturaSal)
       .toFixed(2)
       .replace(/\./g, "")
-      .padStart(7, "0");
-    let string = `0447${tipoSrv}${cliente}${strFecha}${importe}0000000000000000005120185697`;
+      .padStart(10, "0");
+    let string = `0448${nroCbte}${strFecha}${importe}0000000000005120185697`;
     //let string = `044711234567800000000000000000000000000000001234567890`;
     let digitoVerificador1 = digitoVerificacion(string);
     string += `${digitoVerificador1}`;
     let digitoVerificador2 = digitoVerificacion(string);
     string += `${digitoVerificador2}`;
     //setCodigoBarra(string);
-
     const img = new Image();
     if (img) {
-      JsBarcode(".barcode", string.replace(".", ""), { format: "itf" });
+      //JsBarcode(".barcode", string.replace(".", ""), { format: "itf" });
+      JsBarcode(".barcode", string.replace(".", ""));
     }
   }
 
@@ -125,22 +126,22 @@ export default function Factura() {
           <div className="mb-2">
             <p className="text-xs md:text-sm">
               <span className="font-semibold">Suministro: </span>{" "}
-              {fact.cod_suministro} - {fact.nombre}
+              {fact.CuentaNro} - {fact.CuentaNIS}
             </p>
-            <p className="text-xs md:text-sm">
+            {/* <p className="text-xs md:text-sm">
               <span className="font-semibold">Domicilio: </span>{" "}
-              {fact.domicilio_sumin}
-            </p>
+              {fact.}
+            </p> */}
           </div>
 
           <div className="w-full flex text-center justify-around">
             <p className="text-xs md:text-sm">
-              <span className="font-semibold">Factura:</span> {fact.idsucursal}{" "}
-              - {fact.letra} - {fact.nrocbte}
+              <span className="font-semibold">Factura:</span> {(fact.FacturaID).slice(3,7)}{" "}
+              - {(fact.FacturaID).slice(2,3)} - {(fact.FacturaID).slice(7,15)}
             </p>
             <p className="text-xs md:text-sm">
               <span className="font-semibold">Importe:</span>{" "}
-              {fact.srv_saldo.toLocaleString("es-ar", {
+              {fact.FacturaSal.toLocaleString("es-ar", {
                 style: "currency",
                 currency: "ARS",
                 minimumFractionDigits: 2,

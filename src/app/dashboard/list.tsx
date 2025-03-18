@@ -3,11 +3,7 @@ import { Factura } from "../lib/definitions";
 import {
   DocumentTextIcon,
   CreditCardIcon,
-  DocumentArrowDownIcon,
-  PrinterIcon,
-  EyeIcon,
 } from "@heroicons/react/24/solid";
-import Link from "next/link";
 
 export default async function ListInvoice({
   facturas,
@@ -29,19 +25,6 @@ export default async function ListInvoice({
   };
 
   const handleLinkClick = (invoice: any) => {
-    /* const factura = {
-      idsuministro: invoice.idsuministro,
-      cod_suministro: client.cod_suministro,
-      idtipo_srv: invoice.idtipo_srv,
-      idcbte: invoice.idcbte,
-      srv_saldo: invoice.srv_saldo,
-      nombre: invoice.nombre,
-      domicilio_sumin: invoice.domicilio_sumin,
-      idsucursal: invoice.idsucursal,
-      letra: invoice.letra_cbte,
-      nrocbte: invoice.nrocbte
-    };
- */
     /* codificador */
     const facturaString = JSON.stringify(invoice);
     const facturaBase64 = btoa(facturaString);
@@ -92,7 +75,8 @@ export default async function ListInvoice({
                       </button>
                     )}
                     {
-                      (invoice.FacturaSal) < 99999.99 && 
+                      // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
+                      ((invoice.FacturaSal) < 99999.99) && 
                       <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
                         <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
                         Cupon de pago

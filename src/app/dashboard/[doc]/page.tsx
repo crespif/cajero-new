@@ -1,6 +1,6 @@
 import Link from "next/link";
 import SelectSumin from "../select";
-import { getClientes, getFacturas } from "@/app/lib/data";
+import { fetchClient, fetchinvoices } from "@/app/lib/data";
 
 export default async function Dashboard({
   params,
@@ -10,13 +10,13 @@ export default async function Dashboard({
   const doc = params.doc;
 
   try {
-    const clientes = await getClientes(doc);
+    const clientes = await fetchClient(doc);
     if (clientes.length === 0) {
       throw new Error("Cliente no encontrado");
     } 
-    
-    const facturas = await getFacturas(clientes[0].CuentaDoc);
- 
+    const facturas = await fetchinvoices(clientes[0].CuentaDoc);
+    //const facturas = await getFacturas(clientes[0].CuentaDoc);
+
     return (
       <>
         <div className="grow overflow-auto">
