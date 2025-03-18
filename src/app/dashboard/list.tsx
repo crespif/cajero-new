@@ -17,7 +17,8 @@ export default async function ListInvoice({
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
     //router.push(`/pay/${invoice.FacturaID}`, { state: { fac: invoice }});
- /*    const queryParams = new URLSearchParams({
+    /*
+    const queryParams = new URLSearchParams({
       fc: JSON.stringify(invoice),
     }).toString();
     router.push(`/pay/${invoice.FacturaID}?${queryParams}`); */
