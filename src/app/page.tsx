@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function Home() {
   const [doc, setDoc] = useState("10");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any) => {
     e.preventDefault();
@@ -30,9 +31,10 @@ export default function Home() {
           <Link
             href={`dashboard/${doc}`}
             className="flex items-center gap-2 self-start rounded-lg bg-blue-500 py-2 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base m-auto"
+            onClick={() => setLoading(true)}
           >
             <MagnifyingGlassIcon className="w-5" />
-            <span>Buscar</span>
+            <span>{loading ? "Cargando..." : "Buscar"}</span>
           </Link>
         </div>
       </div>
