@@ -8,8 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'CELTA',
-  description: 'Cajero Virtual de CELTA',
-  
+  description: 'Cajero Virtual de CELTA'
 }
 
 export default function RootLayout({
@@ -22,7 +21,9 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/logo.ico" />       
+        <link rel="icon" href="/logo.ico" />    
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />   
       </head>
       <body className={`${inter.className} flex h-[100dvh] flex-col items-center justify-between bg-gray-50` } >
         <Header />
