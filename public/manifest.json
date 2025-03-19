@@ -1,6 +1,6 @@
 {
   "name": "CELTA",
-  "short_name": "CELTA",
+  "short_name": "CELTA - Cajero Virtual",
   "description": "Cajero Virtual de CELTA",
   "start_url": "/",
   "display": "standalone",
