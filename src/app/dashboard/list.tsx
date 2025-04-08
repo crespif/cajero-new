@@ -1,4 +1,3 @@
-"use client"
 import { useRouter } from "next/navigation";
 import { Factura } from "../lib/definitions";
 import {
@@ -16,7 +15,6 @@ export default function ListInvoice({
   doc: string;
 }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
 
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
@@ -31,7 +29,7 @@ export default function ListInvoice({
     const query = await fetch(`http://200.45.235.121:3000/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
     if (data.length > 0) {
-      setOpen(true);
+      alert("Factura pagada");
       return;
     }
 
@@ -48,7 +46,6 @@ export default function ListInvoice({
 
   return (
     <div className="mt-5 overflow-auto">
-      <Dialog open={open} setOpen={setOpen} />
       <h2 className="text-center mb-2">Listado de facturas</h2>
       <div className="">
         {facturas.map((invoice: Factura, index: any) => (
