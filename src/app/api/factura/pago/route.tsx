@@ -1,4 +1,4 @@
-export default async function handler(req: Request, res: Response) {
+export async function POST(req: Request) {
     const data = JSON.parse(await req.text());  
     console.log(data);
     const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
