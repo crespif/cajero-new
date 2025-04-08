@@ -15,6 +15,7 @@ export default function ListInvoice({
   doc: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handlePayLoad = (invoice: Factura) => async () => {
@@ -27,6 +28,7 @@ export default function ListInvoice({
     router.push(`/pay/${invoice.FacturaID}?${queryParams}`); */
 
     /* Se verifica si ya hay un pago por esta dactura en el día */
+    setLoading(true);
     const query = await fetch(`/api/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
     if (data.length > 0) {
@@ -44,6 +46,15 @@ export default function ListInvoice({
     const facturaEncoded = encodeURIComponent(facturaBase64);
     window.open(`/dashboard/factura?cupon=${facturaEncoded}`, "_blank");
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96 space-x-4">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <span className="text-2xl font-bold text-gray-500">Cargando...</span>
+    </div>
+    );
+  }
 
   return (
     <div className="mt-5 overflow-auto">
