@@ -18,6 +18,29 @@ export default async function PayStatus({
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
     if (res.PagoExitoso) {
+
+
+      const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "idcbte": `${Number(res.Request.nro_comprobante)}`,
+          "fecha_pago": `${new Date(res.FechaRegistro)}`,
+          "idoperacion": `${res.IdOperacion}`,
+          "importe": parseInt(res.Request.Importe),
+          "hash": `${hash}`,
+        }) 
+      });
+      if (query.ok){
+        /* const response = await query.json();
+        res.status(200).json(response); */
+        console.log("Pago guardado");
+      }
+      /* else res.status(500).send('Not found'); 
+
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
         body: JSON.stringify({
@@ -28,7 +51,7 @@ export default async function PayStatus({
           "hash": hash,
         })
       });
-      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`);
+      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`); */
       return true;
       /* 
         - TODO guardar pago en la base de datos 
