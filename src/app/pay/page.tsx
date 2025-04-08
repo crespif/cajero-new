@@ -20,21 +20,20 @@ export default async function PayStatus({
     console.log(res);
 
     if (res.PagoExitoso) {
-      console.log(res.Request.nro_comprobante);
-      console.log(new Date(res.FechaRegistro));
-      console.log(res.IdOperacion);
-      console.log(Number(res.Request.Importe));
-      console.log(hash);
-      return true;
-      await fetch(`/api/factura/pago`, {
-        method: 'POST',
+     
+      await fetch(`http://200.45.235.121:3000/factura/pago`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-          "idcbte": res.Request.nro_comprobante,
-          "fecha_pago": new Date(res.FechaRegistro),
-          "idoperacion": res.IdOperacion,
+          "idcbte": `${res.Request.nro_comprobante}`,
+          "fecha_pago": `${new Date(res.FechaRegistro)}`,
+          "idoperacion": `${res.IdOperacion}`,
           "importe": Number(res.Request.Importe),
-          "hash": hash,
-        })
+          "hash": `${hash}`,
+        }) 
       });
       /* if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`); */
       return true;
