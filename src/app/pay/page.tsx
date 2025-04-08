@@ -25,7 +25,7 @@ export default async function PayStatus({
       console.log(res.IdOperacion);
       console.log(Number(res.Request.Importe));
       console.log(hash);
-      return;
+      return true;
       await fetch(`/api/factura/pago`, {
         method: 'POST',
         body: JSON.stringify({
