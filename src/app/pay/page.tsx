@@ -17,9 +17,10 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
+    console.log(hash);
+    console.log(idres);
+    console.log(res);
     if (res.PagoExitoso) {
-
-
       const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
         method: "POST",
         headers: {
@@ -124,7 +125,6 @@ export default async function PayStatus({
     redirect("/");
   } else {
     const res = await estadoPago();
-    console.log(res);
     if (res) {
       return (
         <>
