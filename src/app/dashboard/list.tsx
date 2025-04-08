@@ -1,11 +1,14 @@
+"use client"
 import { useRouter } from "next/navigation";
 import { Factura } from "../lib/definitions";
 import {
   DocumentTextIcon,
   CreditCardIcon,
 } from "@heroicons/react/24/solid";
+import Dialog from "../ui/dialog";
+import { useState } from "react";
 
-export default async function ListInvoice({
+export default function ListInvoice({
   facturas,
   doc
 }: {
@@ -13,6 +16,7 @@ export default async function ListInvoice({
   doc: string;
 }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
@@ -22,6 +26,15 @@ export default async function ListInvoice({
       fc: JSON.stringify(invoice),
     }).toString();
     router.push(`/pay/${invoice.FacturaID}?${queryParams}`); */
+
+    /* Se verifica si ya hay un pago por esta dactura en el día */
+    const query = await fetch(`http://200.45.235.121:3000/factura/pago/${invoice.FacturaID}`);
+    const data = await query.json();
+    if (data.length > 0) {
+      setOpen(true);
+      return;
+    }
+
     router.push(`/pay/${invoice.FacturaID}?doc=${doc}`);
   };
 
@@ -35,6 +48,7 @@ export default async function ListInvoice({
 
   return (
     <div className="mt-5 overflow-auto">
+      <Dialog open={open} setOpen={setOpen} />
       <h2 className="text-center mb-2">Listado de facturas</h2>
       <div className="">
         {facturas.map((invoice: Factura, index: any) => (
