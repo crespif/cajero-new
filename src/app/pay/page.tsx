@@ -124,6 +124,7 @@ export default async function PayStatus({
     redirect("/");
   } else {
     const res = await estadoPago();
+    console.log(res);
     if (res) {
       return (
         <>
