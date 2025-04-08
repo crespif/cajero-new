@@ -15,9 +15,9 @@ export default async function Pay({params, searchParams} : {params: {fc: string,
   if (!sesion.access_token) {
     return <Error />
   } else {    
-    if (cookies().get(`h${fc}`)) {
+    /* if (cookies().get(`h${fc}`)) {
       redirect(`https://siropagos.bancoroela.com.ar/Home/Pago/${cookies().get(`h${fc}`)?.value}`);
-    }
+    } */
     
     /* if (cookies().get(`h${fc}`)) {
       redirect(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${cookies().get(`h${fc}`)?.value}`);

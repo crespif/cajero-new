@@ -12,13 +12,11 @@ export default async function PayStatus({
     IdReferenciaOperacion: number;
   };
 }) {
+
   async function estadoPago() {
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    console.log(hash);
-    console.log(idres);
-    console.log(res);
     if (res.PagoExitoso) {
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
@@ -93,17 +91,16 @@ export default async function PayStatus({
           }
        */
     } else {
-      console.log("error");
+      console.log("error: pago no exitoso");
       return false;
     }
   }
 
   if (cookies().get(`h${searchParams?.idcbte}`)?.value == undefined) {
-    console.log("error");
+    console.log("error: no se encontro la cookie");
     redirect("/");
   } else {
     const res = await estadoPago();
-    console.log(res);
     if (res) {
       return (
         <>

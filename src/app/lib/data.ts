@@ -70,7 +70,7 @@ export async function session(){
   }
 }
 
-export async function payment(sesion: any, data: Factura, fc: string) {
+export async function payment(sesion: any, data: Factura, fc: string) { 
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",
