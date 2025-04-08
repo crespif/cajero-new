@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SelectSumin from "../select";
 import { fetchClient, fetchinvoices } from "@/app/lib/data";
+import Alert from "@/app/ui/alert";
 
 export default async function Dashboard({
   params,
@@ -19,6 +20,8 @@ export default async function Dashboard({
 
     return (
       <>
+      {/* Alerta personalizada sin shadcn */}
+        {/* <Alert /> */}
         <div className="grow overflow-auto">
           <SelectSumin clientes={clientes} facturas={facturas}/>
         </div>

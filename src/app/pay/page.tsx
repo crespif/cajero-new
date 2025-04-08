@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { CheckPay } from "../lib/data";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function PayStatus({
   searchParams,
@@ -15,6 +16,9 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
+    console.log(hash);
+    console.log(idres);
+    console.log(res);
     if (res.PagoExitoso) {
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
@@ -89,15 +93,17 @@ export default async function PayStatus({
           }
        */
     } else {
+      console.log("error");
       return false;
     }
   }
 
   if (cookies().get(`h${searchParams?.idcbte}`)?.value == undefined) {
     console.log("error");
-    //redirect("/");
+    redirect("/");
   } else {
     const res = await estadoPago();
+    console.log(res);
     if (res) {
       return (
         <>
@@ -105,13 +111,13 @@ export default async function PayStatus({
             xmlns="http://www.w3.org/2000/svg"
             fill="green"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth={1.5}
             stroke="currentColor"
             className="w-10 h-10"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
             />
           </svg>
