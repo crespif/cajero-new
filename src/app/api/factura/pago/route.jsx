@@ -1,5 +1,6 @@
 export async function POST(req) {
   const data = await req.json();
+  console.log(data);
   const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
     method: "POST",
     headers: {
