@@ -17,9 +17,7 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    console.log(hash);
-    console.log(idres);
-    console.log(res);
+    return res.PagoExitoso;
     if (res.PagoExitoso) {
       const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
         method: "POST",
@@ -144,8 +142,6 @@ export default async function PayStatus({
           </svg>
 
           <h1>El pago se ha realizado con éxito</h1>
-          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
-          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
@@ -174,8 +170,6 @@ export default async function PayStatus({
             </svg>
             <h1>Error en el pago / Pago cancelado</h1>
           </div>
-          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
-          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
