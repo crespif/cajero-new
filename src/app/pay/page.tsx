@@ -31,7 +31,7 @@ export default async function PayStatus({
           "idcbte": `${res.Request.nro_comprobante}`,
           "fecha_pago": `${new Date(res.FechaRegistro)}`,
           "idoperacion": `${res.IdOperacion}`,
-          "importe": Number(res.Request.Importe),
+          "importe": res.Request.Importe,
           "hash": `${hash}`,
         }) 
       });
