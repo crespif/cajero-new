@@ -18,7 +18,14 @@ export default async function PayStatus({
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
     console.log(res);
+
     if (res.PagoExitoso) {
+      console.log(res.Request.nro_comprobante);
+      console.log(new Date(res.FechaRegistro));
+      console.log(res.IdOperacion);
+      console.log(Number(res.Request.Importe));
+      console.log(hash);
+      return;
       await fetch(`/api/factura/pago`, {
         method: 'POST',
         body: JSON.stringify({
