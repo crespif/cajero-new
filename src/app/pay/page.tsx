@@ -17,7 +17,7 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    return res.PagoExitoso;
+    //return res.PagoExitoso;
     if (res.PagoExitoso) {
       const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
         method: "POST",
@@ -26,13 +26,14 @@ export default async function PayStatus({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          "idcbte": `${Number(res.Request.nro_comprobante)}`,
+          "idcbte": `${res.Request.nro_comprobante}`,
           "fecha_pago": `${new Date(res.FechaRegistro)}`,
           "idoperacion": `${res.IdOperacion}`,
           "importe": parseInt(res.Request.Importe),
           "hash": `${hash}`,
         }) 
       });
+      console.log(query)
       if (query.ok){
         /* const response = await query.json();
         res.status(200).json(response); */
