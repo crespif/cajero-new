@@ -14,6 +14,7 @@ export default function ListInvoice({
   facturas: Factura[];
   doc: string;
 }) {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const handlePayLoad = (invoice: Factura) => async () => {
@@ -26,10 +27,10 @@ export default function ListInvoice({
     router.push(`/pay/${invoice.FacturaID}?${queryParams}`); */
 
     /* Se verifica si ya hay un pago por esta dactura en el día */
-    const query = await fetch(`http://200.45.235.121:3000/factura/pago/${invoice.FacturaID}`);
+    const query = await fetch(`/api/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
     if (data.length > 0) {
-      alert("Factura pagada");
+      setOpen(true);
       return;
     }
 
@@ -46,6 +47,7 @@ export default function ListInvoice({
 
   return (
     <div className="mt-5 overflow-auto">
+      <Dialog open={open} setOpen={setOpen} />
       <h2 className="text-center mb-2">Listado de facturas</h2>
       <div className="">
         {facturas.map((invoice: Factura, index: any) => (
