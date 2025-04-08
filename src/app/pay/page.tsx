@@ -17,7 +17,7 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    console.log(res);
+
 
     if (res.PagoExitoso) {
      
@@ -35,68 +35,7 @@ export default async function PayStatus({
           "hash": `${hash}`,
         }) 
       });
-      /* if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`); */
       return true;
-      /* 
-        - TODO guardar pago en la base de datos 
-        - datos a guardar: 
-         > idcbte
-         > fecha_pago : res.FechaRegistro
-         > idoperacion: res.IdOperacion
-         > importe: res.Importe (ver)
-         > hash: 
-
-         antes :
-         "idcbte": Number(resPago.Request.nro_comprobante),
-          "fecha_pago": new Date(resPago.FechaRegistro),
-          "idoperacion": resPago.IdOperacion,
-          "importe": Number(resPago.Request.Importe),
-          "hash": getCookie(error.idfc),
-
-
-          respuesta: 
-          {
-            PagoExitoso: false,
-            MensajeResultado: null,
-            FechaOperacion: null,
-            FechaRegistro: '2024-03-18T13:29:19.917',
-            IdOperacion: 'bcc30701-c809-4c38-8b50-f3949f8afd84',
-            Estado: 'GENERADA',
-            idReferenciaOperacion: '425',
-            Request: {
-              nro_cliente_empresa: '0111325165120185697',
-              nro_comprobante: '00000000000011132516',
-              Concepto: 'Factura CELTA Nro 0020 00661457',
-              Importe: 10250,
-              URL_OK: 'https://cajero-new.vercel.app/pay?idcbte=1150607236',
-              URL_ERROR: 'https://cajero-new.vercel.app/pay',
-              IdReferenciaOperacion: '425',
-              Detalle: [ [Object] ]
-            },
-            Rendicion: null
-          }
-
-          {
-            PagoExitoso: false,
-            MensajeResultado: 'No es posible conectar con el servidor remoto',
-            FechaOperacion: null,
-            FechaRegistro: '2025-02-04T10:46:55.88',
-            IdOperacion: '0565331b-f76f-48ad-be04-2d45105a1638',
-            Estado: 'ERROR',
-            idReferenciaOperacion: '425',
-            Request: {
-              nro_cliente_empresa: '0111342795150058293',
-              nro_comprobante: '00000000000011134279',
-              Concepto: 'Factura CELTA Nro 0020 00014392',
-              Importe: 998.5,
-              URL_OK: 'https://www.google.com.ar/pay?idcbte=1150608551',
-              URL_ERROR: 'https://www.google.com.ar/pay',
-              IdReferenciaOperacion: '425',
-              Detalle: [ [Object] ]
-            },
-            Rendicion: null
-          }
-       */
     } else {
       console.log("error: pago no exitoso");
       return false;
@@ -127,8 +66,6 @@ export default async function PayStatus({
           </svg>
 
           <h1>El pago se ha realizado con éxito</h1>
-          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
-          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
@@ -157,8 +94,6 @@ export default async function PayStatus({
             </svg>
             <h1>Error en el pago / Pago cancelado</h1>
           </div>
-          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
-          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"

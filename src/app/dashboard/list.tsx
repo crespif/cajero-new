@@ -32,11 +32,12 @@ export default function ListInvoice({
     const query = await fetch(`/api/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
     if (data.length > 0) {
+      setLoading(false);
       setOpen(true);
       return;
+    } else {
+      router.push(`/pay/${invoice.FacturaID}?doc=${doc}`);
     }
-
-    router.push(`/pay/${invoice.FacturaID}?doc=${doc}`);
   };
 
   const handleLinkClick = (invoice: any) => {
