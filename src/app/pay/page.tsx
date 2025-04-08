@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { CheckPay, savePay } from "../lib/data";
+import { CheckPay } from "../lib/data";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -17,12 +17,7 @@ export default async function PayStatus({
     const hash = cookies().get(`h${searchParams?.idcbte}`)?.value ?? "";
     const idres = searchParams?.IdResultado ?? "";
     const res = await CheckPay(idres, hash);
-    //return res.PagoExitoso;
     if (res.PagoExitoso) {
-      
-      await savePay(res, hash);
-      /* else res.status(500).send('Not found'); 
-
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
         body: JSON.stringify({
@@ -33,7 +28,7 @@ export default async function PayStatus({
           "hash": hash,
         })
       });
-      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`); */
+      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`);
       return true;
       /* 
         - TODO guardar pago en la base de datos 
@@ -125,6 +120,8 @@ export default async function PayStatus({
           </svg>
 
           <h1>El pago se ha realizado con éxito</h1>
+          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
+          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
@@ -153,6 +150,8 @@ export default async function PayStatus({
             </svg>
             <h1>Error en el pago / Pago cancelado</h1>
           </div>
+          {/* <h2>IdResultado: {searchParams?.IdResultado}</h2>
+          <h2>IdReferenciaOperacion: {searchParams?.IdReferenciaOperacion}</h2> */}
           <Link
             href={"/"}
             className="text-white rounded border bg-blue-400 hover:bg-blue-600 px-4 py-2"
