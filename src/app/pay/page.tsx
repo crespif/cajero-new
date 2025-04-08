@@ -21,14 +21,14 @@ export default async function PayStatus({
       const resSave = await fetch(`/api/factura/pago`, {
         method: 'POST',
         body: JSON.stringify({
-          "idcbte": Number(res.Request.nro_comprobante),
+          "idcbte": res.Request.nro_comprobante,
           "fecha_pago": new Date(res.FechaRegistro),
           "idoperacion": res.IdOperacion,
           "importe": Number(res.Request.Importe),
           "hash": hash,
         })
       });
-      if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`);
+      /* if (resSave.ok) await fetch(`/api/factura/corte/${Number(res.Request.nro_comprobante)}`); */
       return true;
       /* 
         - TODO guardar pago en la base de datos 
