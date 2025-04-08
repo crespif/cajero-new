@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { CheckPay } from "../lib/data";
+import { CheckPay, savePay } from "../lib/data";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -19,26 +19,8 @@ export default async function PayStatus({
     const res = await CheckPay(idres, hash);
     //return res.PagoExitoso;
     if (res.PagoExitoso) {
-      const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          "idcbte": `${res.Request.nro_comprobante}`,
-          "fecha_pago": `${new Date(res.FechaRegistro)}`,
-          "idoperacion": `${res.IdOperacion}`,
-          "importe": parseInt(res.Request.Importe),
-          "hash": `${hash}`,
-        }) 
-      });
-      console.log(query)
-      if (query.ok){
-        /* const response = await query.json();
-        res.status(200).json(response); */
-        console.log("Pago guardado");
-      }
+      
+      await savePay(res, hash);
       /* else res.status(500).send('Not found'); 
 
       const resSave = await fetch(`/api/factura/pago`, {

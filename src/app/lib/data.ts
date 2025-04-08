@@ -159,3 +159,29 @@ export async function getFacturaById(doc: string, id: string): Promise<Factura> 
     });
   });
 }
+
+
+export async function savePay(res: any, hash: string) {
+  const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      "idcbte": `${res.Request.nro_comprobante}`,
+      "fecha_pago": `${new Date(res.FechaRegistro)}`,
+      "idoperacion": `${res.IdOperacion}`,
+      "importe": parseInt(res.Request.Importe),
+      "hash": `${hash}`,
+    }) 
+  });
+  if (query.ok){
+    const response = await query.json();
+    return response;
+  }
+  else return 'Not found'; 
+
+  //res.status(200).json(JSON.parse(req.body));
+   
+}
