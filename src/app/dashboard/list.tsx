@@ -60,7 +60,17 @@ export default function ListInvoice({
   return (
     <div className="mt-5 overflow-auto">
       <Dialog open={open} setOpen={setOpen} />
-      <h2 className="text-center mb-2">Listado de facturas</h2>
+      <h2 className="text-center mb-2">Listado de facturas adeudadas</h2>
+      {
+        facturas.length === 0 && (
+          <div className="flex items-center justify-center gap-2 bg-green-200 p-2 rounded-md">
+            <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <p className="text-center text-gray-800">No se encontraron facturas adeudadas</p>
+          </div>
+        )
+      }
       <div className="">
         {facturas.map((invoice: Factura, index: any) => (
           <div key={index}>
