@@ -21,10 +21,10 @@ export default function PaymentStatus() {
         if (!idcbte || !IdResultado || !IdReferenciaOperacion) {
           throw new Error("Error en el pago o pago cancelado")
         }
-        console.log(idcbte, IdResultado, IdReferenciaOperacion)
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
         const response = await CheckPay(IdResultado, idcbte);
+
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
         }
@@ -64,7 +64,7 @@ export default function PaymentStatus() {
                   stroke-width="2" 
                   stroke-linecap="round" 
                   stroke-linejoin="round"
-                  className="lucide lucide-check-circle">
+                  className="w-10 h-10">
                 <path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/>
                 <path d="m9 12 2 2 4-4"/>
               </svg>
