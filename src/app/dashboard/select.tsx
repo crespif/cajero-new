@@ -9,11 +9,13 @@ import ListInvoice from "./list";
 export default function SelectSumin({ clientes, facturas }: { clientes: Cliente[]; facturas: Factura[] }) {
 
   const [client, setClient] = useState(clientes[0]);
-  const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS));
+  /* Filtracion de facturas iniciales -- VER MES MAYO */
+  const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS && new Date(factura.FacturaFV).getMonth() + 1 != 5));
 
   const handleChange = (e: any) => {
-    const selected = clientes.filter(cliente => cliente.CuentaNIS === e.target.value);
-    setFacts(facturas.filter(factura => factura.CuentaNIS === selected[0].CuentaNIS));
+    const selected = clientes.filter(cliente => cliente.CuentaNIS === e.target.value)
+    /* Filtracion de facturas -- VER MES MAYO */
+    setFacts(facturas.filter(factura => factura.CuentaNIS === selected[0].CuentaNIS && new Date(factura.FacturaFV).getMonth() + 1 != 5));
     setClient(selected[0]);
   }
 
