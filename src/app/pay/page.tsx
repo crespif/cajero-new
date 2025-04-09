@@ -21,11 +21,11 @@ export default function PaymentStatus() {
         if (!idcbte || !IdResultado || !IdReferenciaOperacion) {
           throw new Error("Error en el pago o pago cancelado")
         }
-
+        console.log(idcbte, IdResultado, IdReferenciaOperacion)
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
         const response = await CheckPay(IdResultado, idcbte);
-
+        console.log(response);
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
         }
@@ -76,7 +76,7 @@ export default function PaymentStatus() {
         <div className="flex flex-col items-center justify-center py-6">
           {status === "loading" && <Loading />}
           {status === "success" && (
-            <div className="text-center">
+            <div className="flex flex-col items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" 
                   viewBox="0 0 24 24" 
                   fill="green" 
@@ -90,14 +90,14 @@ export default function PaymentStatus() {
               </svg>
 
               <div className="space-y-2 mt-4">
-                <p>
+                <p className="text-center">
                   Pago realizado con exito, recuerde que se vera reflejado en su cuenta corriente dentro de las 24 horas.
                 </p>
               </div>
             </div>
           )}
           {status === "error" && (
-            <div className="text-center">
+            <div className="flex flex-col justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="yellow"
@@ -112,21 +112,11 @@ export default function PaymentStatus() {
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
                 />
               </svg>
-              <p className="mt-4">No pudimos procesar tu pago. Por favor, intenta nuevamente o contacta a soporte.</p>
+              <p className="mt-4 text-center">No pudimos procesar tu pago. Error en el pago / Pago cancelado. Por favor, intenta nuevamente.</p>
             </div>
           )}
         </div>
         <div className="flex justify-center gap-4">
-          {status === "success" && (
-            <button>
-              <Link href="/dashboard">Ir a mi cuenta</Link>
-            </button>
-          )}
-          {status === "error" && (
-            <button>
-              <Link href="/checkout">Intentar nuevamente</Link>
-            </button>
-          )}
           <button>
             <Link href="/">Volver al inicio</Link>
           </button>
