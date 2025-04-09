@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { CheckPay } from "../lib/data"
+import Loading from "./loading"
 
 export default function PaymentStatus() {
   const searchParams = useSearchParams()
@@ -74,10 +74,21 @@ export default function PaymentStatus() {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center py-6">
-          {status === "loading" && <Loader2 className="h-16 w-16 text-primary animate-spin" />}
+          {status === "loading" && <Loading />}
           {status === "success" && (
             <div className="text-center">
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="green" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                  className="lucide lucide-check-circle">
+                <path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+
               <div className="space-y-2 mt-4">
                 <p>
                   Pago realizado con exito, recuerde que se vera reflejado en su cuenta corriente dentro de las 24 horas.
@@ -87,7 +98,20 @@ export default function PaymentStatus() {
           )}
           {status === "error" && (
             <div className="text-center">
-              <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="yellow"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-10 h-10"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                />
+              </svg>
               <p className="mt-4">No pudimos procesar tu pago. Por favor, intenta nuevamente o contacta a soporte.</p>
             </div>
           )}
