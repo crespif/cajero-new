@@ -4,8 +4,10 @@
 import { createClient } from "soap";
 import { Cliente, Factura } from "./definitions";
 import { cookies } from "next/headers";
+import { unstable_noStore } from "next/cache";
 
 export async function fetchClient(id: number) {
+  unstable_noStore();
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${id}`)
     if (response.status === 200) {
@@ -21,6 +23,7 @@ export async function fetchClient(id: number) {
 
 
 export async function fetchinvoices(id: string) {
+  unstable_noStore();
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suministro/${id}`);
     if (response.status === 200) {
@@ -85,8 +88,8 @@ export async function payment(sesion: any, data: Factura, fc: string) {
         "nro_comprobante": `${(data.FacturaID).toString().padStart(20,'0')}`,
         "Concepto": `Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}`,
         "Importe": (data.FacturaSal).toFixed(2),
-        "URL_OK": `https://cajero-new.vercel.app/pay?idcbte=${fc}`,
-        "URL_ERROR": `https://cajero-new.vercel.app/pay`,
+        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/pay?idcbte=${fc}`,
+        "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
         "IdReferenciaOperacion": `425`,
         "Detalle": [{'Descripcion': `Suministro: ${data.CuentaNIS}, Factura: ${(data.FacturaID).slice(3,7)}-${(data.FacturaID).slice(7,15)}`, 'Importe': `${(data.FacturaSal).toFixed(2)}`}]
       }),

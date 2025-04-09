@@ -1,3 +1,4 @@
+import { unstable_noStore } from "next/cache";
 import { NextResponse } from "next/server";
 import { createClient } from "soap";
 
@@ -5,6 +6,7 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  unstable_noStore();
   const id = params.id;
   const SOAP_URL = process.env.NEXT_PUBLIC_WS_GLM!;
   try {
