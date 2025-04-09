@@ -3,6 +3,7 @@
 
 import { createClient } from "soap";
 import { Cliente, Factura } from "./definitions";
+import { cookies } from "next/headers";
 
 export async function fetchClient(id: number) {
   try {
@@ -108,15 +109,16 @@ export async function payment(sesion: any, data: Factura, fc: string) {
   }
 }
 
-export async function CheckPay(idResultado: string, Hash: string) {
+export async function CheckPay(idResultado: string, idcbte: string) {
 
   const sesion = await session();
+  const hash = cookies().get(`h${idcbte}`)?.value ?? "";
 
   if (!sesion.access_token) {
     return false;
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${Hash}/${idResultado}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${hash}/${idResultado}`, {
     method: "GET",
     headers: {
       "Accept": "application/json",
@@ -125,7 +127,8 @@ export async function CheckPay(idResultado: string, Hash: string) {
     },
     cache: "no-cache",
   });
-  const data = await res.json();
+  let data = await res.json();
+  data.hash = hash;
   return data;
 
   

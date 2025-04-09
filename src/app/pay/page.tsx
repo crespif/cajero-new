@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { cookies } from "next/headers"
 import { CheckPay } from "../lib/data"
 
 export default function PaymentStatus() {
@@ -18,14 +17,14 @@ export default function PaymentStatus() {
         const idcbte = searchParams.get("idcbte")
         const IdResultado = searchParams.get("IdResultado")
         const IdReferenciaOperacion = searchParams.get("IdReferenciaOperacion")
-        const hash = cookies().get(`h${idcbte}`)?.value ?? "";
-        if (!idcbte || !IdResultado || !IdReferenciaOperacion || !hash) {
+        
+        if (!idcbte || !IdResultado || !IdReferenciaOperacion) {
           throw new Error("Error en el pago o pago cancelado")
         }
 
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
-        const response = await CheckPay(IdResultado, hash);
+        const response = await CheckPay(IdResultado, idcbte);
 
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
@@ -42,7 +41,7 @@ export default function PaymentStatus() {
             "fecha_pago": `${new Date(response.FechaRegistro)}`,
             "idoperacion": `${response.IdOperacion}`,
             "importe": parseInt(response.Request.Importe),
-            "hash": `${hash}`,
+            "hash": `${response.hash}`,
           }) 
         });
 
