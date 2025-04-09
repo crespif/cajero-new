@@ -28,26 +28,7 @@ export default function PaymentStatus() {
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
         }
-
-        const r = await fetch(`http://200.45.235.121:3000/factura/pago`, {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            "idcbte": `${response.Request.nro_comprobante}`,
-            "fecha_pago": `${new Date(response.FechaRegistro)}`,
-            "idoperacion": `${response.IdOperacion}`,
-            "importe": parseInt(response.Request.Importe),
-            "hash": `${response.hash}`,
-          }) 
-        });
-        console.log(r);
-        // Simulamos un pequeño retraso para mostrar el estado de carga
-        setTimeout(() => {
-          setStatus("success")
-        }, 1500)
+        setStatus("success")
       } catch (error) {
         console.error("Error verificando el pago:", error)
         setStatus("error")
