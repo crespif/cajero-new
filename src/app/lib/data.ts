@@ -129,7 +129,6 @@ export async function CheckPay(idResultado: string, idcbte: string) {
   });
   let data = await res.json();
   data.hash = hash;
-  console.log(data);
   return data;
 
   

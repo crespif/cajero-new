@@ -25,12 +25,11 @@ export default function PaymentStatus() {
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
         const response = await CheckPay(IdResultado, idcbte);
-        console.log(response);
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
         }
 
-        await fetch(`http://200.45.235.121:3000/factura/pago`, {
+        const r = await fetch(`http://200.45.235.121:3000/factura/pago`, {
           method: "POST",
           headers: {
             "Accept": "application/json",
@@ -44,7 +43,7 @@ export default function PaymentStatus() {
             "hash": `${response.hash}`,
           }) 
         });
-
+        console.log(r);
         // Simulamos un pequeño retraso para mostrar el estado de carga
         setTimeout(() => {
           setStatus("success")
