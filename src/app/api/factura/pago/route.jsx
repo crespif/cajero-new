@@ -1,4 +1,7 @@
+import { unstable_noStore } from "next/cache";
+
 export async function POST(req) {
+  unstable_noStore();
   const data = await req.json();
   const query = await fetch(`http://200.45.235.121:3000/factura/pago`, {
     method: "POST",
