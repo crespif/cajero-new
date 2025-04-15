@@ -131,9 +131,9 @@ export async function CheckPay(idResultado: string, idcbte: string) {
     cache: "no-cache",
   });
   let data = await res.json();
-
   if (data.PagoExitoso) {
-    await fetch(`http://200.45.235.121:3000/factura/pago`, {
+    await fetch(`http://200.45.235.121:3000/payments`, {
+    //await fetch(`http://localhost:3000/payments`, {
       method: "POST",
       headers: {
         "Accept": "application/json",
@@ -141,7 +141,7 @@ export async function CheckPay(idResultado: string, idcbte: string) {
       },
       body: JSON.stringify({
         "idcbte": `${data.Request.nro_comprobante}`,
-        "fecha_pago": `${new Date(data.FechaRegistro)}`,
+        "fecha_pago": `${data.FechaRegistro}`,
         "idoperacion": `${data.IdOperacion}`,
         "importe": parseInt(data.Request.Importe),
         "hash": `${hash}`,
