@@ -10,12 +10,12 @@ export default function SelectSumin({ clientes, facturas }: { clientes: Cliente[
 
   const [client, setClient] = useState(clientes[0]);
   /* Filtracion de facturas iniciales -- VER MES MAYO */
-  const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS && new Date(factura.FacturaFV).getMonth() + 1 != 5));
+  const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS && ![5, 6].includes(new Date(factura.FacturaFV).getMonth() + 1)));
 
   const handleChange = (e: any) => {
     const selected = clientes.filter(cliente => cliente.CuentaNIS === e.target.value)
     /* Filtracion de facturas -- VER MES MAYO */
-    setFacts(facturas.filter(factura => factura.CuentaNIS === selected[0].CuentaNIS && new Date(factura.FacturaFV).getMonth() + 1 != 5));
+    setFacts(facturas.filter(factura => factura.CuentaNIS === selected[0].CuentaNIS && ![5, 6].includes(new Date(factura.FacturaFV).getMonth() + 1)));
     setClient(selected[0]);
   }
 
