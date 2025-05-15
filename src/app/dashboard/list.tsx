@@ -73,8 +73,15 @@ export default function ListInvoice({
       }
       <div className="">
         {facturas.map((invoice: Factura, index: any) => (
-          <div key={index}>
-            <div className="flex flex-row p-2 gap-2 border border-gray-200 rounded-md mb-2 items-center">
+          <div key={index} className="border border-gray-200 rounded-md">
+            {
+              invoice.FacturaDA == "S" && (
+                <span className="ml-2 bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                  Factura en Debito Automatico
+                </span>
+              )
+            }
+            <div className="flex flex-row p-2 gap-2 mb-2 items-center">
               <DocumentTextIcon className="md:w-6 md:h-6 text-gray-500 w-16 h-16" />
               <div className="flex md:flex-row flex-col md:gap-2 gap-1 my-auto w-8/12 text-xs">
                 <span className=" text-gray-600 md:text-center">
@@ -99,9 +106,10 @@ export default function ListInvoice({
                 </span>
               </div>
               <div className="flex md:flex-row flex-col md:gap-2 gap-1 my-auto w-6/12 justify-end">
-                {invoice.FacturaDA == "N" && invoice.FacturaSal > 0 && (
+                {/* {invoice.FacturaDA == "N" && invoice.FacturaSal > 0 && ( */}
+                {invoice.FacturaSal > 0 && (
                   <>
-                    {invoice.FacturaSal < 999999.99 && (
+                    {invoice.FacturaSal < 2000000.01 && (
                       <button
                         className="bg-blue-800 text-white rounded-md  text-xs flex items-center w-32 p-1  hover:bg-blue-600"
                         onClick={handlePayLoad(invoice)}
@@ -112,7 +120,7 @@ export default function ListInvoice({
                     )}
                     {
                       // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
-                      ((invoice.FacturaSal) < 99999.99) && 
+                      ((invoice.FacturaSal) < 150000.01) && 
                       <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
                         <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
                         Cupon de pago
@@ -130,6 +138,7 @@ export default function ListInvoice({
                   Ver
                 </Link> */}
               </div>
+             
             </div>
           </div>
         ))}
