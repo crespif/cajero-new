@@ -37,7 +37,7 @@ export default function SelectSumin({ clientes, facturas }: { clientes: Cliente[
         </div>
       </div>
       <Suspense fallback={<ListSkeleton />}>
-        <ListInvoice facturas={facts} doc={client.CuentaDoc} />
+        <ListInvoice facturas={facts} cliente={client} />
       </Suspense>
     </>
   )    

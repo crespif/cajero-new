@@ -1,23 +1,25 @@
 import { useRouter } from "next/navigation";
-import { Factura } from "../lib/definitions";
+import { Cliente, Factura } from "../lib/definitions";
 import {
   DocumentTextIcon,
   CreditCardIcon,
 } from "@heroicons/react/24/solid";
 import Dialog from "../ui/dialog";
 import { useState } from "react";
+import Link from "next/link";
+import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
 export default function ListInvoice({
   facturas,
-  doc
+  cliente
 }: {
   facturas: Factura[];
-  doc: string;
+  cliente: Cliente;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
     //router.push(`/pay/${invoice.FacturaID}`, { state: { fac: invoice }});
@@ -36,7 +38,7 @@ export default function ListInvoice({
       setOpen(true);
       return;
     } else {
-      router.push(`/pay/${invoice.FacturaID}?doc=${doc}`);
+      router.push(`/pay/${invoice.FacturaID}?doc=${cliente.CuentaDoc}`);
     }
   };
 
@@ -128,15 +130,15 @@ export default function ListInvoice({
                     }
                   </>
                 )}
-
-                {/* <Link 
-                  href={`https://celtatsas.com.ar/sucursalvirtual/fac/${(new Date (invoice.FacturaFE)).getMonth()+1}/${(invoice.CuentaNIS).toString().padStart(8,0)}FAC${(invoice.FacturaID).padStart(2,0)}${(invoice.FacturaID)}${(invoice.FacturaID).toString().padStart(8,0)}.pdf`}
+                
+                <Link 
+                  href={`http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awsemifac?01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}
                   target="_blank" 
                   className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
                 >
                   <DocumentArrowDownIcon className="w-6 h-6 text-white mr-1 " />
                   Ver
-                </Link> */}
+                </Link>
               </div>
              
             </div>
