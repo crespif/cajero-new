@@ -131,8 +131,17 @@ export default function ListInvoice({
                   </>
                 )}
                 
+                {/* <Link 
+                  href={`http://192.168.98.223:3000/facturapdf/01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}
+                  target="_blank" 
+                  className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
+                >
+                  <DocumentArrowDownIcon className="w-6 h-6 text-white mr-1 " />
+                  Ver
+                </Link> */}
+
                 <Link 
-                  href={`http://192.168.99.12/CELTA_COM_PROD/servlet/ar.com.glmsa.servicios.comercial.awsemifac?01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}
+                  href={`/api/factura/pdf/01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}
                   target="_blank" 
                   className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
                 >
