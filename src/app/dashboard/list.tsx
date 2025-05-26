@@ -47,7 +47,7 @@ export default function ListInvoice({
     const facturaString = JSON.stringify(invoice);
     const facturaBase64 = btoa(facturaString);
     const facturaEncoded = encodeURIComponent(facturaBase64);
-    window.open(`/dashboard/factura?cupon=${facturaEncoded}`, "_blank");
+    router.push(`/dashboard/factura?cupon=${facturaEncoded}`);
   };
 
   if (loading) {
