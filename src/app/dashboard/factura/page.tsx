@@ -4,12 +4,13 @@ const { useState } = require("react");
 
 import MediosDePago from "@/app/ui/mediosdepago";
 import JsBarcode from "jsbarcode";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Factura() {
   const searchParams = useSearchParams();
   const [vto, setVto] = useState(null);
+  const router = useRouter();
 
   const factura = searchParams.get("cupon");
 
@@ -89,7 +90,7 @@ export default function Factura() {
           </button>
           <div
             className="cursor-pointer print:hidden border-2 rounded-md p-1 hover:bg-gray-200 mr-1"
-            onClick={() => window.close()}
+            onClick={() => router.back()}
           >
             <span className="flex">
               <svg
