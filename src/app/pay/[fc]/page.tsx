@@ -28,6 +28,7 @@ export default async function Pay({params, searchParams} : {params: {fc: string,
     if (pago.Url) {
       return <Status Fc={fc} Url={pago.Url} Hash={pago.Hash} />
     } else {
+      console.log(pago);
       if (pago.ModelState["pago_request.nro_comprobante"] !== undefined) {
         return (
           <ErrorSavePago />
