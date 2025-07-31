@@ -9,7 +9,7 @@ import ListInvoice from "./list";
 export default function SelectSumin({ clientes, facturas }: { clientes: Cliente[]; facturas: Factura[] }) {
 
   const [client, setClient] = useState(clientes[0]);
-  const [monthExclude, setMonthExclude] = useState([9]); // Exclude September by default
+  const [monthExclude, setMonthExclude] = useState([9]); // Exclude Month by default
   /* Filtracion de facturas iniciales -- VER MES MAYO */
   const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS && !monthExclude.includes(new Date(factura.FacturaFV).getMonth() + 1)));
   //const [facts, setFacts] = useState(facturas.filter(factura => factura.CuentaNIS === client.CuentaNIS));
