@@ -24,29 +24,42 @@ export type Suministro = {
   debito: boolean;
 } */
 
-  export interface Cliente {
-    PersonaNro: number;
-    CuentaNro: number;
-    CuentaSrv: string;
-    CuentaDom: string;
-    CuentaDoc: string;
-    CuentaNom: string;
-    CuentaLoc: string;
-    CuentaNIS: string;
-    CuentaUnA: string;
-  }
+export interface Cliente {
+  PersonaNro: number;
+  CuentaNro: number;
+  CuentaSrv: string;
+  CuentaDom: string;
+  CuentaDoc: string;
+  CuentaNom: string;
+  CuentaLoc: string;
+  CuentaNIS: string;
+  CuentaUnA: string;
+}
 
 
-  export interface Factura {
-    FacturaID: string,
-    FacturaFE: string,
-    FacturaPer: number,
-    FacturaFV: string,
-    FacturaImp: number,
-    FacturaSal: number,
-    FacturaDA: string,
-    PersonaNro: number,
-    CuentaNro: number,
-    CuentaNIS: string,
-    CuentaUnA: string
-  }
+export interface Factura {
+  FacturaID: string,
+  FacturaFE: string,
+  FacturaPer: number,
+  FacturaFV: string,
+  FacturaImp: number,
+  FacturaSal: number,
+  FacturaDA: string,
+  PersonaNro: number,
+  CuentaNro: number,
+  CuentaNIS: string,
+  CuentaUnA: string
+}
+
+export interface FacturaPagas {
+  CliCod: number;
+  SumNro: number;
+  CompFec: string;
+  CompLet: string;
+  CompPtoV: number;
+  CompNro: number;
+  CompImp: number;
+  CompSdo: number;
+  CompTpo: number;
+  CompVto: string;
+}

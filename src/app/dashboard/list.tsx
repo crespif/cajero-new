@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { Cliente, Factura } from "../lib/definitions";
 import {
@@ -34,7 +36,6 @@ export default function ListInvoice({
     const query = await fetch(`/api/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
     if (!data.error) {
-      console.log(data);
       setLoading(false);
       setOpen(true);
       return;
