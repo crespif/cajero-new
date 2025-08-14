@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function CheckPayFront({idResultado, IdReferenciaOperacion} : {idResultado: string, IdReferenciaOperacion: string}) {
 
 
-  const checkin = await CheckPay(idResultado, IdReferenciaOperacion);
+  const checkin = await CheckPay('0', idResultado, IdReferenciaOperacion);
 
   if (checkin) {
     return (
