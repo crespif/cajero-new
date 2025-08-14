@@ -1,9 +1,7 @@
 
-import { redirect } from "next/navigation";
 import { getFacturaById, payment, session } from "../../lib/data";
 import Error from "@/app/ui/error";
 import Status from "./status";
-import { cookies } from "next/headers";
 import ErrorSavePago from "@/app/ui/errorSavePago";
 
 export default async function Pay({params, searchParams} : {params: {fc: string, doc: string}, searchParams?: {[key: string] : string}}) {
@@ -16,18 +14,14 @@ export default async function Pay({params, searchParams} : {params: {fc: string,
   if (!sesion.access_token) {
     return <Error />
   } else {    
-    /* if (cookies().get(`h${fc}`)) {
-      redirect(`https://siropagos.bancoroela.com.ar/Home/Pago/${cookies().get(`h${fc}`)?.value}`);
-    } */
-    
-    /* if (cookies().get(`h${fc}`)) {
-      redirect(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${cookies().get(`h${fc}`)?.value}`);
-    }
-    const fact = await fetchinvoice(fc  ^ Number(process.env.NEXT_PUBLIC_HASH));*/
     const pago = await payment(sesion, fact, fc);
     if (pago.Url) {
-      return <Status Fc={fc} Url={pago.Url} Hash={pago.Hash} />
+      return <Status Url={pago.Url}/>
     } else {
+      /* console.log(pago.ModelState["pago_request.nro_comprobante"][0]);
+      if (pago.ModelState["pago_request.nro_comprobante"][0].includes("ya cargado")) {
+        return <ErrorSavePago />
+      } */
       if (pago.ModelState["pago_request.nro_comprobante"] !== undefined) {
         return (
           <ErrorSavePago />

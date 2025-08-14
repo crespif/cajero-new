@@ -90,7 +90,7 @@ export async function payment(sesion: any, data: Factura, fc: string) {
         "Importe": (data.FacturaSal).toFixed(2),
         "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/pay?idcbte=${fc}`,
         "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
-        "IdReferenciaOperacion": `425`,
+        "IdReferenciaOperacion": `${(data.FacturaID).toString().padStart(20,'0')}`,
         "Detalle": [{'Descripcion': `Suministro: ${data.CuentaNIS}, Factura: ${(data.FacturaID).slice(3,7)}-${(data.FacturaID).slice(7,15)}`, 'Importe': `${(data.FacturaSal).toFixed(2)}`}]
       }),
      /*  body: JSON.stringify({
@@ -112,25 +112,41 @@ export async function payment(sesion: any, data: Factura, fc: string) {
   }
 }
 
-export async function CheckPay(idResultado: string, idcbte: string) {
+export async function CheckPay(idResultado: string, idcbte: string, IdReferenciaOperacion: string) {
+  unstable_noStore();
 
   const sesion = await session();
-  const hash = cookies().get(`h${idcbte}`)?.value ?? "";
+  /* const hash = cookies().get(`h${idcbte}`)?.value ?? ""; */
 
   if (!sesion.access_token) {
     return false;
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/${hash}/${idResultado}`, {
-    method: "GET",
+  const hoy = new Date();
+  const ayer = new Date();
+  ayer.setDate(hoy.getDate() - 1);
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/Consulta`, {
+    method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Authorization": `${sesion.token_type} ${sesion.access_token}`,
     },
-    cache: "no-cache",
+    body: JSON.stringify({
+      "FechaDesde": `${ayer.toISOString()}`,
+      "FechaHasta": `${hoy.toISOString()}`,
+      "IdReferenciaOperacion": `${IdReferenciaOperacion}`,
+    }),
+
   });
   let data = await res.json();
+  // quedarme con el ultimo resultado
+  if (data.length > 0) {
+    data = data[data.length - 1];
+  } else {
+    throw new Error("No se encontraron pagos recientes");
+  }
   if (data.PagoExitoso) {
     await fetch(`http://200.45.235.121:3000/payments`, {
     //await fetch(`http://localhost:3000/payments`, {
@@ -144,7 +160,7 @@ export async function CheckPay(idResultado: string, idcbte: string) {
         "fecha_pago": `${data.FechaRegistro}`,
         "idoperacion": `${data.IdOperacion}`,
         "importe": parseInt(data.Request.Importe),
-        "hash": `${hash}`,
+        "hash": `${data.idReferenciaOperacion}`,
       }) 
     });
   }
@@ -182,3 +198,41 @@ export async function getFacturaById(doc: string, id: string): Promise<Factura> 
     });
   });
 }
+
+
+
+//Cliente empresa CELTA 5120185697
+//Cliente empresa PRUEBA 5150058293
+export async function paymentQR(factura: Factura) {
+  const sesion = await session();
+  try {   
+    const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION_QR}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `${sesion.token_type} ${sesion.access_token}`,
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "nro_cliente_empresa": `${(factura.PersonaNro).toString().padStart(9,'0')}5120185697`,
+        "nro_comprobante": `${(factura.FacturaID).toString().padStart(20,'0')}`,
+        "Concepto": `Factura CELTA Nro ${(factura.FacturaID).slice(3,7)} ${(factura.FacturaID).slice(7,15)}`,
+        "Importe": (factura.FacturaSal).toFixed(2),
+        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/api/payment?idcbte=${factura.FacturaID}`,
+        "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
+        "IdReferenciaOperacion": `${(factura.FacturaID).toString().padStart(20,'0')}`,
+        "Detalle": [{'Descripcion': `Suministro: ${factura.CuentaNIS}, Factura: ${(factura.FacturaID).slice(3,7)}-${(factura.FacturaID).slice(7,15)}`, 'Importe': `${(factura.FacturaSal).toFixed(2)}`}]
+      }),
+    });
+    const response = await query.json();
+    if (response.error) {
+      console.error("Error al generar el código QR:", response.error);
+      return;
+    }
+    return response;
+    
+  } catch (error) {
+    console.error("Error en la solicitud de pago QR:", error);
+    return error;
+  }
+};

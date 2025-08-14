@@ -23,7 +23,7 @@ export default function PaymentStatus() {
         }
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
-        const response = await CheckPay(IdResultado, idcbte);
+        const response = await CheckPay(IdResultado, idcbte, IdReferenciaOperacion);
    
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
