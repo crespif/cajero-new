@@ -9,7 +9,11 @@ import {
 import Dialog from "../ui/dialog";
 import { useState } from "react";
 import Link from "next/link";
-import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import { DocumentArrowDownIcon, QrCodeIcon } from "@heroicons/react/24/outline";
+import { paymentQR } from "../lib/data";
+import DialogQr from "./dialogQr";
+import Loading from "./loading";
+import { toast } from "sonner";
 
 export default function ListInvoice({
   facturas,
@@ -21,6 +25,9 @@ export default function ListInvoice({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const [openQR, setOpenQR] = useState(false);
+  const [strQr, setstrQr] = useState("");
   
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
@@ -52,12 +59,39 @@ export default function ListInvoice({
     router.push(`/dashboard/factura?cupon=${facturaEncoded}`);
   };
 
+  
+  const handleQr = async (row: Factura) => {
+    setLoading(true);
+    const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
+    const data = await query.json();
+    if (!data.error) {
+      setLoading(false);
+      setOpen(true);
+      return;
+    } else {
+      const res = await paymentQR(row);
+      if (res && res.StringQR) {
+        setLoading(false);
+        setstrQr(res.StringQR);
+        setOpenQR(true);
+      } else {
+        setLoading(false);
+        toast("Se ha producido un error al generar el QR.", {
+          description: "Por favor, intente nuevamente más tarde.",
+          action: {
+            label: "Cerrar",
+            onClick: () => setOpenQR(false),
+          },
+        })
+      }
+    } 
+    
+  }
+
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96 space-x-4">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      <span className="text-2xl font-bold text-gray-500">Cargando...</span>
-    </div>
+      <Loading />
     );
   }
 
@@ -123,24 +157,26 @@ export default function ListInvoice({
                       </button>
                     )}
                     {
+                     /*  <button
+                        className="text-white rounded-md  text-xs flex items-center w-32 p-1 bg-purple-800 hover:bg-purple-600"
+                        onClick={() => handleQr(invoice)}
+                      >
+                        <QrCodeIcon className="w-6 h-6 text-white mr-1 " />
+                        PAGO QR
+                      </button> */
+                    }
+                    {openQR && <DialogQr openQR={openQR} setOpenQR={setOpenQR} strQr={strQr} />}
+                    {
                       // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
-                      ((invoice.FacturaSal) < 150000.01) && 
+                      ((invoice.FacturaSal) < 300000.01) && 
                       <button className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600" onClick={() => handleLinkClick(invoice)}>
                         <DocumentTextIcon className="w-6 h-6 text-white mr-1 " />
-                        Cupon de pago
+                        Ver Cupón
                       </button> 
                     }
+                   
                   </>
                 )}
-                
-                {/* <Link 
-                  href={`http://192.168.98.223:3000/facturapdf/01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}
-                  target="_blank" 
-                  className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
-                >
-                  <DocumentArrowDownIcon className="w-6 h-6 text-white mr-1 " />
-                  Ver
-                </Link> */}
 
                 <Link 
                   href={`/api/factura/pdf/01${(cliente.PersonaNro).toString().padStart(6,"0")}${(cliente.CuentaNro).toString().padStart(6,"0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${(new Date(invoice.FacturaFE).getDate() + 1).toString().padStart(2, "0")}${invoice.FacturaID}`}

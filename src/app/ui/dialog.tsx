@@ -40,13 +40,19 @@ export default function Dialog({
                   className="text-lg leading-6 font-medium text-gray-900"
                   id="modal-title"
                 >
-                  Proceso de pago en curso
+                  Ya existe un proceso de pago para esta factura
                 </h3>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Se ha iniciado un proceso de pago para esta factura. Una vez confirmado, el movimiento se reflejará en su cuenta corriente dentro de las próximas 24 horas.
-                  </p>
-                </div>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  Se ha iniciado un proceso de pago para esta factura. Una vez
+                  confirmado, el movimiento se reflejará en su cuenta corriente
+                  dentro de las próximas 24 horas.
+                </p>
+
+                <p className="text-sm text-gray-500 mt-2">
+                  En caso de que el pago no se haya concretado, por favor
+                  intente nuevamente en unos minutos.
+                </p>
               </div>
             </div>
             <div className="mt-5 sm:mt-6">
