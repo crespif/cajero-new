@@ -28,6 +28,7 @@ export default function ListInvoice({
 
   const [openQR, setOpenQR] = useState(false);
   const [strQr, setstrQr] = useState("");
+  const [fact, setFact] = useState<Factura | null>(null);
   
   const handlePayLoad = (invoice: Factura) => async () => {
     // encriptar el icbte de invoice
@@ -62,6 +63,7 @@ export default function ListInvoice({
   
   const handleQr = async (row: Factura) => {
     setLoading(true);
+    // Verificar si ya hay un pago por esta factura en el día
     const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
     const data = await query.json();
     if (!data.error) {
@@ -74,6 +76,7 @@ export default function ListInvoice({
         setLoading(false);
         setstrQr(res.StringQR);
         setOpenQR(true);
+        setFact(row);
       } else {
         setLoading(false);
         toast("Se ha producido un error al generar el QR.", {
@@ -157,15 +160,15 @@ export default function ListInvoice({
                       </button>
                     )}
                     {
-                     /*  <button
+                      <button
                         className="text-white rounded-md  text-xs flex items-center w-32 p-1 bg-purple-800 hover:bg-purple-600"
                         onClick={() => handleQr(invoice)}
                       >
                         <QrCodeIcon className="w-6 h-6 text-white mr-1 " />
                         PAGO QR
-                      </button> */
+                      </button>
                     }
-                    {openQR && <DialogQr openQR={openQR} setOpenQR={setOpenQR} strQr={strQr} />}
+                    {fact && openQR && invoice.FacturaSal < 2000000.01 && <DialogQr openQR={openQR} setOpenQR={setOpenQR} strQr={strQr} invoice={fact}/>}
                     {
                       // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
                       ((invoice.FacturaSal) < 300000.01) && 
