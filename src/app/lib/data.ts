@@ -204,6 +204,7 @@ export async function getFacturaById(doc: string, id: string): Promise<Factura> 
 //Cliente empresa CELTA 5120185697
 //Cliente empresa PRUEBA 5150058293
 export async function paymentQR(factura: Factura) {
+  unstable_noStore();
   const sesion = await session();
   try {   
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION_QR}`, {

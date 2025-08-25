@@ -2,16 +2,18 @@
 
 import Image from "next/image";
 import QRCode from "react-qr-code";
+import { Factura } from "../lib/definitions";
 
 interface DialogQrProps {
   openQR: boolean;
   setOpenQR: (open: boolean) => void;
   strQr: string;
+  invoice: Factura | null;
 }
 
-export default function DialogQr({ openQR, setOpenQR, strQr }: DialogQrProps) {
+export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQrProps) {
   return (
-    openQR && (
+    openQR && invoice && (
       <div className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
           <div className="absolute inset-0 bg-gray-200 opacity-75"></div>
@@ -40,7 +42,27 @@ export default function DialogQr({ openQR, setOpenQR, strQr }: DialogQrProps) {
               className="object-contain"
             />
           </div>
-          <h2 className="text-xl font-bold mb-4 text-center">Código QR para pagar</h2>
+          {/* <h2 className="text-xl font-bold mb-4 text-center">Código QR para pagar</h2> */}
+          <p className="text-center">
+            Factura N°:{" "}
+            <strong>{`${(invoice.FacturaID).slice(3,7)}-${(invoice.FacturaID).slice(7,15)}`}</strong>
+            {invoice.FacturaFV && (
+              <span className="ml-2">
+                Vto:{" "}
+                <strong>
+                  {new Date(invoice.FacturaFV).toLocaleDateString("es-ar")}
+                </strong>
+              </span>
+            )}
+          </p>
+          <span className="text-xl font-bold text-center block mb-4">
+            {invoice.FacturaSal.toLocaleString("es-ar", {
+              style: "currency",
+              currency: "ARS",
+              minimumFractionDigits: 2,
+            })}
+          </span>
+
           <QRCode value={strQr} size={200} className="mx-auto" />
           <p className="mt-4 text-center mb-4">
             * Escanea este código QR con tu aplicación bancaria para realizar el
