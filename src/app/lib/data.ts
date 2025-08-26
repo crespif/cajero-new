@@ -114,7 +114,6 @@ export async function payment(sesion: any, data: Factura, fc: string) {
 
 export async function CheckPay(idResultado: string, idcbte: string, IdReferenciaOperacion: string) {
   unstable_noStore();
-
   const sesion = await session();
   /* const hash = cookies().get(`h${idcbte}`)?.value ?? ""; */
 
@@ -145,7 +144,7 @@ export async function CheckPay(idResultado: string, idcbte: string, IdReferencia
   if (data.length > 0) {
     data = data[data.length - 1];
   } else {
-    throw new Error("No se encontraron pagos recientes");
+    return { PagoExitoso: false };
   }
   if (data.PagoExitoso) {
     await fetch(`http://200.45.235.121:3000/payments`, {
