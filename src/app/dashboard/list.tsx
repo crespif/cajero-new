@@ -61,7 +61,7 @@ export default function ListInvoice({
     setLoading(true);
     // Verificar si ya hay un pago por esta factura en el día
   
-    const response = await CheckPay("", "", (row.FacturaID).toString().padStart(20,'0'));
+    const response = await CheckPay((row.FacturaID).toString().padStart(20,'0'));
     if (response?.PagoExitoso) {
       setLoading(false);
       setOpen(true);

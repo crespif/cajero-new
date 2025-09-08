@@ -3,6 +3,7 @@
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { Factura } from "../lib/definitions";
+import Link from "next/link";
 
 interface DialogQrProps {
   openQR: boolean;
@@ -26,7 +27,28 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
         </span>
 
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div className="flex justify-between items-center mb-4">
+          {/* Boton para cerrar el modal */}
+          <button
+            onClick={() => setOpenQR(false)}
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+            aria-label="Cerrar"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          <div className="flex justify-between items-center mb-4 mt-2">
             <Image
               src="/logo.png" // Ruta en /public
               alt="Banco Roela"
@@ -64,16 +86,23 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
           </span>
 
           <QRCode value={strQr} size={200} className="mx-auto" />
-          <p className="mt-4 text-center mb-4">
-            * Escanea este código QR con tu aplicación bancaria para realizar el
+          <p className="mt-4 text-center mb-4 text-gray-500 text-sm">
+            * Este código QR con tu aplicación bancaria para realizar el
             pago.
           </p>
-          <button
-            onClick={() => setOpenQR(false)}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
-          >
-            Cerrar
-          </button>
+          <p className="text-sm text-gray-600 text-center flex flex-col">
+            <span className="font-bold">** EVITE CORTES DE SERVICIO ** </span>
+            {`Una vez realizado el pago, presiona el botón "Pago realizado", para informar a CELTA sobre el mismo.`}
+            <span className="mt-1">{`*Recuerde que el pago, igualmente, se verá reflejado en su cuenta corriente dentro de las 24 horas hábiles.`}</span>
+          </p>
+          <div>
+            <Link
+              href={`/pay?idcbte=${invoice.FacturaID}&type=QR`}
+              className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 block text-center"
+            >
+              Pago realizado
+            </Link>
+          </div>
         </div>
       </div>
     )

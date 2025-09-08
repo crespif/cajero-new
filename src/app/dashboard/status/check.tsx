@@ -2,16 +2,15 @@ import { CheckPay } from "@/app/lib/data";
 import Link from "next/link";
 
 
-export default async function CheckPayFront({idResultado, IdReferenciaOperacion} : {idResultado: string, IdReferenciaOperacion: string}) {
+export default async function CheckPayFront({IdReferenciaOperacion} : {IdReferenciaOperacion: string}) {
 
 
-  const checkin = await CheckPay('0', idResultado, IdReferenciaOperacion);
+  const checkin = await CheckPay(IdReferenciaOperacion);
 
   if (checkin) {
     return (
       <>
         <h1>El pago se ha realizado con éxito</h1>
-        <h2>IdResultado: {idResultado}</h2>
         <h2>IdReferenciaOperacion: {IdReferenciaOperacion}</h2>
       </>
     )
@@ -19,7 +18,6 @@ export default async function CheckPayFront({idResultado, IdReferenciaOperacion}
     return (
       <>
         <h1>El pago no se ha completado</h1>
-        <h2>IdResultado: {idResultado}</h2>
         <h2>IdReferenciaOperacion: {IdReferenciaOperacion}</h2>
         <Link href={"/"}>
           Volver

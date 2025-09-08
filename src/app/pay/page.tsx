@@ -14,17 +14,16 @@ export default function PaymentStatus() {
     const checkPaymentStatus = async () => {
       try {
         // Extraer los parámetros de la URL
-        const idcbte = searchParams.get("idcbte")
-        const IdResultado = searchParams.get("IdResultado")
-        const IdReferenciaOperacion = searchParams.get("IdReferenciaOperacion")
+        const idcbte = searchParams.get("idcbte");
+        const type = searchParams.get("type") || "";
         
-        if (!idcbte || !IdResultado || !IdReferenciaOperacion) {
+        if (!idcbte) {
           throw new Error("Error en el pago o pago cancelado")
         }
         // Aquí realizarías la consulta a tu API para verificar el estado del pago
         // Este es un ejemplo, deberás reemplazarlo con tu lógica real
-        const response = await CheckPay(IdResultado, idcbte, IdReferenciaOperacion);
-   
+        const response = await CheckPay(idcbte, type);
+        
         if (!response.PagoExitoso) {
           throw new Error("Error al verificar el pago o pago cancelado")
         }
