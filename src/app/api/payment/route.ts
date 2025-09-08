@@ -7,15 +7,11 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const idcbte = searchParams.get("idcbte");
-    const IdResultado = searchParams.get("IdResultado");
-    const IdReferenciaOperacion = searchParams.get("IdReferenciaOperacion");
 
-    if (!idcbte || !IdResultado || !IdReferenciaOperacion) {
+    if (!idcbte) {
       return NextResponse.json({ error: "Parámetros inválidos" }, { status: 400 });
     }
-    console.log("Parámetros recibidos:", { idcbte, IdResultado, IdReferenciaOperacion });
-    const response = await CheckPay(IdResultado, idcbte, IdReferenciaOperacion);
-    console.log("Respuesta del servicio CheckPay:", response, { idcbte, IdResultado, IdReferenciaOperacion });
+    const response = await CheckPay(idcbte);
     if (response?.PagoExitoso) {
       //Redireccionar a la página de éxito
       /* return NextResponse.redirect(new URL(`/pay?idcbte=${idcbte}&IdResultado=${IdResultado}&IdReferenciaOperacion=${IdReferenciaOperacion}`, req.url)); */

@@ -17,7 +17,7 @@ export default function SelectSumin({
   facturas: Factura[];
 }) {
   const [client, setClient] = useState(clientes[0]);
-  const monthExclude = [10]; // Exclude Month by default
+  const monthExclude = [11]; // Exclude Month by default
   /* Filtracion de facturas iniciales */
   const [facts, setFacts] = useState(
     facturas.filter(
@@ -38,6 +38,10 @@ export default function SelectSumin({
           `/api/factura/pagas?cta=${client.PersonaNro}&sum=${client.CuentaNro}`
         );
         const data = await response.json();
+        /* Ordenar facturas pagas por CompFec desc */
+        data.sort((a: FacturaPagas, b: FacturaPagas) => {
+          return new Date(b.CompFec).getTime() - new Date(a.CompFec).getTime();
+        });
         setFactsPagas(data);
         setLoading(false);
       } catch (error) {

@@ -112,7 +112,7 @@ export async function payment(sesion: any, data: Factura, fc: string) {
   }
 }
 
-export async function CheckPay(idResultado: string, idcbte: string, IdReferenciaOperacion: string) {
+export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
   unstable_noStore();
   const sesion = await session();
   /* const hash = cookies().get(`h${idcbte}`)?.value ?? ""; */
@@ -160,6 +160,7 @@ export async function CheckPay(idResultado: string, idcbte: string, IdReferencia
         "idoperacion": `${data.IdOperacion}`,
         "importe": parseInt(data.Request.Importe),
         "hash": `${data.idReferenciaOperacion}`,
+        "type": `${tipo || ''}`
       }) 
     });
   }
