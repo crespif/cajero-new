@@ -40,7 +40,7 @@ export default function SelectSumin({
         const data = await response.json();
         /* Ordenar facturas pagas por CompFec desc */
         data.sort((a: FacturaPagas, b: FacturaPagas) => {
-          return new Date(b.CompFec).getTime() - new Date(a.CompFec).getTime();
+          return new Date(b.CompVto).getTime() - new Date(a.CompVto).getTime();
         });
         setFactsPagas(data);
         setLoading(false);
