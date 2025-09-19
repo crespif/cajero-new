@@ -88,7 +88,7 @@ export async function payment(sesion: any, data: Factura, fc: string) {
         "nro_comprobante": `${(data.FacturaID).toString().padStart(20,'0')}`,
         "Concepto": `Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}`,
         "Importe": (data.FacturaSal).toFixed(2),
-        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/pay?idcbte=${fc}`,
+        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/pay?idcbte=${fc}&type=btn`,
         "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
         "IdReferenciaOperacion": `${(data.FacturaID).toString().padStart(20,'0')}`,
         "Detalle": [{'Descripcion': `Suministro: ${data.CuentaNIS}, Factura: ${(data.FacturaID).slice(3,7)}-${(data.FacturaID).slice(7,15)}`, 'Importe': `${(data.FacturaSal).toFixed(2)}`}]
@@ -160,7 +160,7 @@ export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
         "idoperacion": `${data.IdOperacion}`,
         "importe": parseInt(data.Request.Importe),
         "hash": `${data.idReferenciaOperacion}`,
-        "type": `${tipo || ''}`
+        "type": `${tipo}`
       }) 
     });
   }
