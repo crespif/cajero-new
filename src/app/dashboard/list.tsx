@@ -36,7 +36,7 @@ export default function ListInvoice({
     }).toString();
     router.push(`/pay/${invoice.FacturaID}?${queryParams}`); */
 
-    /* Se verifica si ya hay un pago por esta dactura en el día */
+    /* Se verifica si ya hay un pago por esta factura en el día */
     setLoading(true);
     const query = await fetch(`/api/factura/pago/${invoice.FacturaID}`);
     const data = await query.json();
@@ -61,7 +61,7 @@ export default function ListInvoice({
     setLoading(true);
     // Verificar si ya hay un pago por esta factura en el día
   
-    const response = await CheckPay((row.FacturaID).toString().padStart(20,'0'));
+    const response = await CheckPay((row.FacturaID).toString().padStart(20,'0'), 'QR');
     if (response?.PagoExitoso) {
       setLoading(false);
       setOpen(true);

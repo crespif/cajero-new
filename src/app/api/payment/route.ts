@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     if (!idcbte) {
       return NextResponse.json({ error: "Parámetros inválidos" }, { status: 400 });
     }
-    const response = await CheckPay(idcbte);
+    const response = await CheckPay(idcbte, 'QR');
     if (response?.PagoExitoso) {
       //Redireccionar a la página de éxito
       /* return NextResponse.redirect(new URL(`/pay?idcbte=${idcbte}&IdResultado=${IdResultado}&IdReferenciaOperacion=${IdReferenciaOperacion}`, req.url)); */
