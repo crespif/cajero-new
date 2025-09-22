@@ -16,7 +16,7 @@ export default function PaymentStatus() {
         // Extraer los parámetros de la URL
         const idcbte = searchParams.get("idcbte");
         const type = searchParams.get("type") || "";
-        
+
         if (!idcbte) {
           throw new Error("Error en el pago o pago cancelado")
         }

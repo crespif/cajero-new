@@ -124,7 +124,6 @@ export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
   const hoy = new Date();
   const ayer = new Date();
   ayer.setDate(hoy.getDate() - 1);
-
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}/Consulta`, {
     method: "POST",
     headers: {
@@ -135,12 +134,13 @@ export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
     body: JSON.stringify({
       "FechaDesde": `${ayer.toISOString()}`,
       "FechaHasta": `${hoy.toISOString()}`,
-      "IdReferenciaOperacion": `${IdReferenciaOperacion}`,
+      "idReferenciaOperacion": `${(IdReferenciaOperacion).toString().padStart(20,'0')}`,
     }),
 
   });
   let data = await res.json();
   // quedarme con el ultimo resultado
+  console.log(data);
   if (data.length > 0) {
     data = data[data.length - 1];
   } else {
