@@ -60,28 +60,35 @@ export default function ListInvoice({
   const handleQr = async (row: Factura) => {
     setLoading(true);
     // Verificar si ya hay un pago por esta factura en el día
-  
-    const response = await CheckPay((row.FacturaID).toString().padStart(20,'0'), 'QR');
-    if (response?.PagoExitoso) {
+    const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
+    const data = await query.json();
+    if (!data.error) {
       setLoading(false);
       setOpen(true);
-      return;
+      return
     } else {
-      const res = await paymentQR(row);
-      if (res && res.StringQR) {
+      const response = await CheckPay((row.FacturaID).toString().padStart(20, '0'), 'QR');
+      if (response?.PagoExitoso) {
         setLoading(false);
-        setstrQr(res.StringQR);
-        setOpenQR(true);
-        setFact(row);
+        setOpen(true);
+        return;
       } else {
-        setLoading(false);
-        toast("Se ha producido un error al generar el QR.", {
-          description: "Por favor, intente nuevamente más tarde.",
-          action: {
-            label: "Cerrar",
-            onClick: () => setOpenQR(false),
-          },
-        });
+        const res = await paymentQR(row);
+        if (res && res.StringQR) {
+          setLoading(false);
+          setstrQr(res.StringQR);
+          setOpenQR(true);
+          setFact(row);
+        } else {
+          setLoading(false);
+          toast("Se ha producido un error al generar el QR.", {
+            description: "Por favor, intente nuevamente más tarde.",
+            action: {
+              label: "Cerrar",
+              onClick: () => setOpenQR(false),
+            },
+          });
+        }
       }
     }
   };
@@ -205,10 +212,10 @@ export default function ListInvoice({
                   ).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1)
                     .toString()
                     .padStart(2, "0")}${(
-                    new Date(invoice.FacturaFE).getDate() + 1
-                  )
-                    .toString()
-                    .padStart(2, "0")}${invoice.FacturaID}`}
+                      new Date(invoice.FacturaFE).getDate() + 1
+                    )
+                      .toString()
+                      .padStart(2, "0")}${invoice.FacturaID}`}
                   target="_blank"
                   className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
                 >
