@@ -158,7 +158,7 @@ export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
         "idcbte": `${data.Request.nro_comprobante}`,
         "fecha_pago": `${data.FechaRegistro}`,
         "idoperacion": `${data.IdOperacion}`,
-        "importe": parseFloat(data.Request.Importe),
+        "importe": parseInt(data.Request.Importe),
         "hash": `${data.idReferenciaOperacion}`,
         "type": `${tipo}`
       }) 
