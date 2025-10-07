@@ -188,7 +188,7 @@ export default function ListInvoice({
                         invoice={fact}
                       />
                     )}
-                    {
+                    {/*{
                       // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
                       invoice.FacturaSal < 300000.01 && (
                         <button
@@ -199,7 +199,7 @@ export default function ListInvoice({
                           Ver Cupón
                         </button>
                       )
-                    }
+                    }*/}
                   </>
                 )}
 
