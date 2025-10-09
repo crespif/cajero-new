@@ -59,7 +59,7 @@ export default function ListInvoice({
 
   const handleQr = async (row: Factura) => {
     setLoading(true);
-    // Verificar si ya hay un pago por esta factura en el día
+    // Verificar si ya hay un pago por esta factura en el día actual
     const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
     const data = await query.json();
     if (!data.error) {
@@ -154,7 +154,12 @@ export default function ListInvoice({
                 <span className=" text-gray-600 md:text-center">
                   Vencimiento:{" "}
                   <strong>
-                    {new Date(invoice.FacturaFV).toLocaleDateString("es-ar")}
+                    {/* {new Date(invoice.FacturaFV).toLocaleDateString("es-ar")} */}
+                    {new Date(invoice.FacturaFV).getUTCDate().toString().padStart(2, '0') }
+                    /
+                    {new Date(invoice.FacturaFV).getUTCMonth() + 1}
+                    /
+                    {new Date(invoice.FacturaFV).getUTCFullYear()}
                   </strong>
                 </span>
               </div>
@@ -188,9 +193,10 @@ export default function ListInvoice({
                         invoice={fact}
                       />
                     )}
-                    {/*{
+                    {
                       // TODO hay un problema con el cupon de pago, no se puede generar el codigo de barras porque para generar el digito verificador se necesita el ID como numero
-                      invoice.FacturaSal < 300000.01 && (
+                      // Ver si la factura esta vencida en 5 dias
+                      (new Date(invoice.FacturaFV).getTime() + 5 * 24 * 60 * 60 * 1000 > new Date().getTime()) && invoice.FacturaSal < 300000.01 && (
                         <button
                           className="bg-orange-800 text-white rounded-md  text-xs flex items-center w-32 p-1 hover:bg-orange-600"
                           onClick={() => handleLinkClick(invoice)}
@@ -199,7 +205,7 @@ export default function ListInvoice({
                           Ver Cupón
                         </button>
                       )
-                    }*/}
+                    }
                   </>
                 )}
 

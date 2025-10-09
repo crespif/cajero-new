@@ -140,7 +140,6 @@ export async function CheckPay(IdReferenciaOperacion: string, tipo?: string) {
   });
   let data = await res.json();
   // quedarme con el ultimo resultado
-  console.log(data);
   if (data.length > 0) {
     data = data[data.length - 1];
   } else {
