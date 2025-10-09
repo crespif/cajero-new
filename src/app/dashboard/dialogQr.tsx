@@ -4,6 +4,8 @@ import Image from "next/image";
 import QRCode from "react-qr-code";
 import { Factura } from "../lib/definitions";
 import Link from "next/link";
+import { CheckPay } from "../lib/data";
+import { toast } from "sonner";
 
 interface DialogQrProps {
   openQR: boolean;
@@ -13,6 +15,20 @@ interface DialogQrProps {
 }
 
 export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQrProps) {
+
+  const handleClose = async (f: Factura) => {
+    const res = await CheckPay(f.FacturaID, 'QR');
+    if (res?.PagoExitoso) {
+      toast.success(`Pago realizado con éxito`, {
+        style: {
+          backgroundColor: 'green',
+          color: 'white',
+        }
+      });
+    }
+    setOpenQR(false);
+  };
+
   return (
     openQR && invoice && (
       <div className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -28,10 +44,11 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
 
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
           {/* Boton para cerrar el modal */}
+
           <button
-            onClick={() => setOpenQR(false)}
             className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
             aria-label="Cerrar"
+            onClick={() => handleClose(invoice)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,6 +65,7 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
               />
             </svg>
           </button>
+
           <div className="flex justify-between items-center mb-4 mt-2">
             <Image
               src="/logo.png" // Ruta en /public
@@ -67,12 +85,16 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
           {/* <h2 className="text-xl font-bold mb-4 text-center">Código QR para pagar</h2> */}
           <p className="text-center">
             Factura N°:{" "}
-            <strong>{`${(invoice.FacturaID).slice(3,7)}-${(invoice.FacturaID).slice(7,15)}`}</strong>
+            <strong>{`${(invoice.FacturaID).slice(3, 7)}-${(invoice.FacturaID).slice(7, 15)}`}</strong>
             {invoice.FacturaFV && (
               <span className="ml-2">
                 Vto:{" "}
                 <strong>
-                  {new Date(invoice.FacturaFV).toLocaleDateString("es-ar")}
+                  {new Date(invoice.FacturaFV).getUTCDate().toString().padStart(2, '0')}
+                  /
+                  {new Date(invoice.FacturaFV).getUTCMonth() + 1}
+                  /
+                  {new Date(invoice.FacturaFV).getUTCFullYear()}
                 </strong>
               </span>
             )}
