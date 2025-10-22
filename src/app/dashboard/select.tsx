@@ -149,6 +149,28 @@ export default function SelectSumin({
                   )}${String(factura.CompNro).padStart(8, "0")}`}
                   target="_blank"
                   className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
+                  onClick={() => {
+                    console.log(
+                      `/api/factura/pdf/01${client.PersonaNro.toString().padStart(
+                    6,
+                    "0"
+                  )}${client.CuentaNro.toString().padStart(6, "0")}${new Date(
+                    factura.CompFec
+                  ).getFullYear()}${(new Date(factura.CompFec).getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0")}${(
+                    new Date(factura.CompFec).getDate() + 1
+                  )
+                    .toString()
+                    .padStart(2, "0")}${String(factura.CompTpo).padStart(
+                    2,
+                    "0"
+                  )}${factura.CompLet}${String(factura.CompPtoV).padStart(
+                    4,
+                    "0"
+                  )}${String(factura.CompNro).padStart(8, "0")}`
+                    )
+                  }}
                 >
                   <DocumentArrowDownIcon className="w-6 h-6 text-white mr-1 " />
                   Ver

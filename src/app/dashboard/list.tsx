@@ -208,7 +208,6 @@ export default function ListInvoice({
                     }
                   </>
                 )}
-
                 <Link
                   href={`/api/factura/pdf/01${cliente.PersonaNro.toString().padStart(
                     6,
