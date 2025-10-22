@@ -217,7 +217,7 @@ export default function ListInvoice({
                   ).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1)
                     .toString()
                     .padStart(2, "0")}${(
-                      new Date(invoice.FacturaFE).getDate() + 1
+                      new Date(invoice.FacturaFE).getDate()
                     )
                       .toString()
                       .padStart(2, "0")}${invoice.FacturaID}`}
