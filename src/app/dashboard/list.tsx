@@ -216,11 +216,9 @@ export default function ListInvoice({
                     invoice.FacturaFE
                   ).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1)
                     .toString()
-                    .padStart(2, "0")}${(
-                      new Date(invoice.FacturaFE).getDate()
-                    )
-                      .toString()
-                      .padStart(2, "0")}${invoice.FacturaID}`}
+                    .padStart(2, "0")}${new Date(invoice.FacturaFE).getUTCDate()
+                    .toString()
+                    .padStart(2, '0')}${invoice.FacturaID}`}
                   target="_blank"
                   className="bg-green-800 text-white rounded-md  text-xs flex items-center p-1 w-32  hover:bg-green-600"
                 >
