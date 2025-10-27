@@ -124,7 +124,11 @@ export default function SelectSumin({
                   <span className=" text-gray-600 md:text-center">
                     Vencimiento:{" "}
                     <strong>
-                      {new Date(factura.CompVto).toLocaleDateString("es-ar")}
+                      {new Date(factura.CompVto).getUTCDate().toString().padStart(2, '0') }
+                      /
+                      {new Date(factura.CompVto).getUTCMonth() + 1}
+                      /
+                      {new Date(factura.CompVto).getUTCFullYear()}
                     </strong>
                   </span>
                 </div>
