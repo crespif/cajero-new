@@ -167,7 +167,7 @@ export default function ListInvoice({
                 {/* {invoice.FacturaDA == "N" && invoice.FacturaSal > 0 && ( */}
                 {invoice.FacturaSal > 0 && (
                   <>
-                    {invoice.FacturaSal < 2000000.01 && (
+                    {invoice.FacturaSal < 3000000.01 && (
                       <button
                         className="bg-blue-800 text-white rounded-md  text-xs flex items-center w-32 p-1  hover:bg-blue-600"
                         onClick={handlePayLoad(invoice)}
@@ -185,7 +185,7 @@ export default function ListInvoice({
                         PAGO QR
                       </button>
                     }
-                    {fact && openQR && invoice.FacturaSal < 2000000.01 && (
+                    {fact && openQR && invoice.FacturaSal < 3000000.01 && (
                       <DialogQr
                         openQR={openQR}
                         setOpenQR={setOpenQR}
