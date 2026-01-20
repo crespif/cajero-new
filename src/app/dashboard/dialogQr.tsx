@@ -122,7 +122,7 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
               href={`/pay?idcbte=${invoice.FacturaID}&type=QR`}
               className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 block text-center"
             >
-              Pago realizado
+              Informar pago
             </Link>
           </div>
         </div>
