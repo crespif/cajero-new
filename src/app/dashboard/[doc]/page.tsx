@@ -2,6 +2,7 @@ import Link from "next/link";
 import SelectSumin from "../select";
 import { fetchClient, fetchinvoices } from "@/app/lib/data";
 import Alert from "@/app/ui/alert";
+import SurveyPopup from "@/app/ui/survey-popup";
 
 export default async function Dashboard({
   params,
@@ -20,6 +21,7 @@ export default async function Dashboard({
 
     return (
       <>
+        <SurveyPopup personaNro={clientes[0].PersonaNro} />
       {/* Alerta personalizada sin shadcn */}
         {/* <Alert /> */}
         <div className="grow overflow-auto">
