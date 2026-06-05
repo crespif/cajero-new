@@ -21,8 +21,8 @@ export default async function Dashboard({
 
     return (
       <>
-        <SurveyPopup personaNro={clientes[0].PersonaNro} />
-      {/* Alerta personalizada sin shadcn */}
+        {/* <SurveyPopup personaNro={clientes[0].PersonaNro} /> */}
+        {/* Alerta personalizada sin shadcn */}
         {/* <Alert /> */}
         <div className="grow overflow-auto">
           <SelectSumin clientes={clientes} facturas={facturas}/>
