@@ -1,60 +1,86 @@
 "use client";
 
-import Link from "next/link";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 import { useState } from "react";
 
-
 export default function Home() {
-  const [doc, setDoc] = useState("10");
+  const [doc, setDoc] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setDoc(e.target.value);
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+    if (!doc) return;
     setLoading(true);
-    // Redirect to dashboard
     window.location.href = `dashboard/${doc}`;
   };
 
   return (
-    <main className="flex flex-col items-center justify-between p-4">
-      <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Cajero Virtual
-        </h1>
-        <p className="text-gray-600">Bienvenido al Cajero Virtual de CELTA</p>
-        <form onSubmit={handleSubmit} className="flex md:flex-row flex-col items-center justify-center p-4">
+    <main className="home-wrap">
+      <div className="home-card anim-fade-up">
+        <div className="home-logo">
+          <Image
+            src="/logo.png"
+            alt="CELTA"
+            width={64}
+            height={80}
+            priority
+            style={{ width: "auto", height: "68px", margin: "0 auto" }}
+          />
+        </div>
+
+        <h1 className="home-title">Cajero Virtual</h1>
+        <p className="home-sub">
+          Ingresá tu número de documento para consultar y pagar tus facturas
+        </p>
+
+        <form onSubmit={handleSubmit}>
           <input
-            type="text" 
+            type="text"
             pattern="[0-9]*"
-            placeholder="Documento"
-            className="p-2 m-2 border border-gray-300 rounded-lg"
-            onChange={handleChange}
+            placeholder="Número de documento"
+            className="home-input"
+            value={doc}
+            onChange={(e) => setDoc(e.target.value)}
             required
             inputMode="numeric"
-            title="Formato de documento invalido, ingrese solo numeros"
+            autoFocus
+            title="Ingrese solo números"
           />
-          <button
-            type="submit"
-            className="flex items-center gap-2 self-start rounded-lg bg-blue-500 py-2 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base m-auto"
-          >
-            <MagnifyingGlassIcon className="w-5" />
-            <span>{loading ? "Cargando..." : "Buscar"}</span>
+          <button type="submit" className="home-btn" disabled={loading}>
+            {loading ? (
+              <>
+                <svg
+                  className="anim-spin"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" strokeLinecap="round" />
+                </svg>
+                Buscando…
+              </>
+            ) : (
+              <>
+                Buscar
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+              </>
+            )}
           </button>
-         {/*  
-          <Link
-            href={`dashboard/${doc}`}
-            className="flex items-center gap-2 self-start rounded-lg bg-blue-500 py-2 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base m-auto"
-            onClick={() => setLoading(true)}
-          >
-            <MagnifyingGlassIcon className="w-5" />
-            <span>{loading ? "Cargando..." : "Buscar"}</span>
-          </Link> */}
         </form>
       </div>
     </main>
