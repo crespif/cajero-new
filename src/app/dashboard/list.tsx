@@ -140,6 +140,13 @@ export default function ListInvoice({
                           : `Vence ${dueDateStr}`}
                     </span>
                   </div>
+                  
+                </div>
+                <div className="md:hidden text-right my-auto">
+                  <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
+                    <DocumentArrowDownIcon />
+                    PDF
+                  </Link>
                 </div>
 
                 {/* acciones */}
@@ -161,10 +168,12 @@ export default function ListInvoice({
                         Cupón
                       </button>
                     )}
-                    <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
-                      <DocumentArrowDownIcon />
-                      PDF
-                    </Link>
+                    <div className="hidden md:flex">
+                      <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
+                        <DocumentArrowDownIcon />
+                        PDF
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
