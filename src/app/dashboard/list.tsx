@@ -162,12 +162,12 @@ export default function ListInvoice({
                       <QrCodeIcon />
                       QR
                     </button>
-                    {dueDate.getTime() + 5 * 86400000 > now.getTime() && invoice.FacturaSal < 300000.01 && (
+                  {/*   {dueDate.getTime() + 5 * 86400000 > now.getTime() && invoice.FacturaSal < 300000.01 && (
                       <button className="inv-btn inv-btn-cupon" onClick={() => handleLinkClick(invoice)}>
                         <DocumentTextIcon />
                         Cupón
                       </button>
-                    )}
+                    )} */}
                     <div className="hidden md:flex">
                       <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
                         <DocumentArrowDownIcon />
