@@ -9,12 +9,16 @@ export default async function Pay({params, searchParams} : {params: {fc: string,
   const fc = params.fc;
   const doc = searchParams?.doc || '';;
   const sesion = await session();
-  const fact = await getFacturaById(doc, fc);
-  
+  // la division no es la ",", sino %2C, por lo que hay que reemplazarlo
+  const fcDecoded = decodeURIComponent(fc);
+  const ids = fcDecoded.split(',');
+  const facts = await Promise.all(ids.map((id) => getFacturaById(doc, id)));
+
   if (!sesion.access_token) {
     return <Error />
-  } else {    
-    const pago = await payment(sesion, fact, fc);
+  } else {
+  
+    const pago = await payment(sesion, facts, fc);
     if (pago.Url) {
       return <Status Url={pago.Url}/>
     } else {

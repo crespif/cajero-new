@@ -4,6 +4,7 @@ import Image from "next/image";
 import QRCode from "react-qr-code";
 import { Factura } from "../lib/definitions";
 import { CheckPay } from "../lib/data";
+import { buildComprobante, pickComprobante } from "../lib/comprobante";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -33,6 +34,10 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
     }
   };
 
+  const facturasList = invoice ? (invoice.facturas ?? [invoice]) : [];
+  const representante = facturasList.length > 0 ? pickComprobante(facturasList) : null;
+  const reference = representante ? buildComprobante(representante) : "";
+
   useEffect(() => {
     if (!openQR || !invoice) return;
 
@@ -52,7 +57,7 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
       }
 
       try {
-        const res = await CheckPay(invoice.FacturaID.toString().padStart(20, "0"), "QR");
+        const res = await CheckPay(reference, "QR");
         if (res?.PagoExitoso) {
           stopPolling();
           setStatus("success");
@@ -116,7 +121,7 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
         <p className="text-center text-sm" style={{ color: "var(--c-muted)" }}>
           Factura{" "}
           <strong style={{ color: "var(--c-text)" }}>
-            {`${invoice.FacturaID.slice(3, 7)}-${invoice.FacturaID.slice(7, 15)}`}
+            {representante ? `${representante.FacturaID.slice(3, 7)}-${representante.FacturaID.slice(7, 15)}` : ""}
           </strong>
           {dueDateStr && (
             <span className="ml-2">
