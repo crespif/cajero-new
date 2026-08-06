@@ -12,17 +12,39 @@ import Dialog from "../ui/dialog";
 import { useState } from "react";
 import Link from "next/link";
 import { CheckPay, paymentQR } from "../lib/data";
+import { buildComprobante, pickComprobante } from "../lib/comprobante";
 import DialogQr from "./dialogQr";
 import Loading from "./loading";
 import { toast } from "sonner";
 
+function groupFacturas(facturas: Factura[]): Factura[] {
+  const groups = new Map<string, Factura[]>();
+  for (const f of facturas) {
+    const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA].join("|");
+    const group = groups.get(key);
+    if (group) group.push(f);
+    else groups.set(key, [f]);
+  }
+  return Array.from(groups.values()).map((group) => {
+    if (group.length === 1) return group[0];
+    return {
+      ...group[0],
+      FacturaID: group.map((f) => f.FacturaID).join(","),
+      FacturaImp: group.reduce((sum, f) => sum + f.FacturaImp, 0),
+      FacturaSal: group.reduce((sum, f) => sum + f.FacturaSal, 0),
+      facturas: group,
+    };
+  });
+}
+
 export default function ListInvoice({
-  facturas,
+  facturas: rawFacturas,
   cliente,
 }: {
   facturas: Factura[];
   cliente: Cliente;
 }) {
+  const facturas = groupFacturas(rawFacturas);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -56,13 +78,15 @@ export default function ListInvoice({
       setOpen(true);
       return;
     }
-    const response = await CheckPay(row.FacturaID.toString().padStart(20, "0"), "QR");
+    const underlying = row.facturas ?? [row];
+    const comprobante = buildComprobante(pickComprobante(underlying));
+    const response = await CheckPay(comprobante, "QR");
     if (response?.PagoExitoso) {
       setLoading(false);
       setOpen(true);
       return;
     }
-    const res = await paymentQR(row);
+    const res = await paymentQR(underlying);
     if (res && res.StringQR) {
       setLoading(false);
       setstrQr(res.StringQR);
@@ -103,7 +127,10 @@ export default function ListInvoice({
             const isOverdue = daysUntilDue < 0;
             const isSoon = !isOverdue && daysUntilDue <= 5;
             const dueDateStr = `${dueDate.getUTCDate().toString().padStart(2, "0")}/${dueDate.getUTCMonth() + 1}/${dueDate.getUTCFullYear()}`;
-            const pdfHref = `/api/factura/pdf/01${cliente.PersonaNro.toString().padStart(6, "0")}${cliente.CuentaNro.toString().padStart(6, "0")}${new Date(invoice.FacturaFE).getFullYear()}${(new Date(invoice.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${new Date(invoice.FacturaFE).getUTCDate().toString().padStart(2, "0")}${invoice.FacturaID}`;
+            const underlying = invoice.facturas ?? [invoice];
+            const representante = pickComprobante(underlying);
+            const invoiceLabel = `${representante.FacturaID.slice(3, 7)}-${representante.FacturaID.slice(7, 15)}`;
+            const pdfHrefs = [`/api/factura/pdf/01${cliente.PersonaNro.toString().padStart(6, "0")}${cliente.CuentaNro.toString().padStart(6, "0")}${new Date(representante.FacturaFE).getFullYear()}${(new Date(representante.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${new Date(representante.FacturaFE).getUTCDate().toString().padStart(2, "0")}${representante.FacturaID}`];
 
             return (
               <div
@@ -123,7 +150,7 @@ export default function ListInvoice({
                       <span className="inv-da-badge">⚡ Débito automático</span>
                     )}
                     <span className="inv-num">
-                      Factura <strong>{`${invoice.FacturaID.slice(3, 7)}-${invoice.FacturaID.slice(7, 15)}`}</strong>
+                      Factura <strong>{invoiceLabel}</strong>
                     </span>
                     <span className="inv-amount">
                       {invoice.FacturaSal.toLocaleString("es-ar", {
@@ -142,11 +169,13 @@ export default function ListInvoice({
                   </div>
                   
                 </div>
-                <div className="md:hidden text-right my-auto">
-                  <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
-                    <DocumentArrowDownIcon />
-                    PDF
-                  </Link>
+                <div className="md:hidden text-right my-auto flex flex-col gap-1 items-end">
+                  {pdfHrefs.map((href, i) => (
+                    <Link key={i} href={href} target="_blank" className="inv-btn inv-btn-pdf">
+                      <DocumentArrowDownIcon />
+                      PDF{pdfHrefs.length > 1 ? ` ${i + 1}` : ""}
+                    </Link>
+                  ))}
                 </div>
 
                 {/* acciones */}
@@ -168,11 +197,13 @@ export default function ListInvoice({
                         Cupón
                       </button>
                     )} */}
-                    <div className="hidden md:flex">
-                      <Link href={pdfHref} target="_blank" className="inv-btn inv-btn-pdf">
-                        <DocumentArrowDownIcon />
-                        PDF
-                      </Link>
+                    <div className="hidden md:flex gap-1">
+                      {pdfHrefs.map((href, i) => (
+                        <Link key={i} href={href} target="_blank" className="inv-btn inv-btn-pdf">
+                          <DocumentArrowDownIcon />
+                          PDF{pdfHrefs.length > 1 ? ` ${i + 1}` : ""}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 )}

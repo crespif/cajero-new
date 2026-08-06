@@ -14,7 +14,7 @@ export default function SelectSumin({
   facturas: Factura[];
 }) {
   const [client, setClient] = useState(clientes[0]);
-  const monthExclude = [9];
+  const monthExclude = [11];
 
   const [facts, setFacts] = useState(
     facturas.filter(

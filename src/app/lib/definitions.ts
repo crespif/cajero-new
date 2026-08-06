@@ -48,7 +48,8 @@ export interface Factura {
   PersonaNro: number,
   CuentaNro: number,
   CuentaNIS: string,
-  CuentaUnA: string
+  CuentaUnA: string,
+  facturas?: Factura[]
 }
 
 export interface FacturaPagas {

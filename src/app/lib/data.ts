@@ -2,9 +2,9 @@
 "use server"
 
 import { createClient } from "soap";
-import { Cliente, Factura } from "./definitions";
-import { cookies } from "next/headers";
+import { Factura } from "./definitions";
 import { unstable_noStore } from "next/cache";
+import { buildComprobante, pickComprobante, cbteNoEnergetico } from "./comprobante";
 
 export async function fetchClient(id: number) {
   unstable_noStore();
@@ -28,6 +28,7 @@ export async function fetchinvoices(id: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suministro/${id}`);
     if (response.status === 200) {
       const data = await response.json();
+      //console.log("fetchinvoices data:", data);
       return data;
     } else {
       return [];
@@ -74,8 +75,16 @@ export async function session(){
   }
 }
 
-export async function payment(sesion: any, data: Factura, fc: string) { 
-  try {   
+export async function payment(sesion: any, data: Factura[], fc: string) {
+  try {
+  
+    const representante = pickComprobante(data);
+    const noEnergetico = cbteNoEnergetico(data);
+    const total = data.reduce((sum, f) => sum + f.FacturaSal, 0);
+    const comprobante = representante.FacturaID;
+    const IDNoEnergetico = noEnergetico[0]?.FacturaID;
+
+    //const concepto = data.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",
       headers: {
@@ -84,14 +93,15 @@ export async function payment(sesion: any, data: Factura, fc: string) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "nro_cliente_empresa": `${(data.PersonaNro).toString().padStart(9,'0')}5120185697`,
-        "nro_comprobante": `${(data.FacturaID).toString().padStart(20,'0')}`,
-        "Concepto": `Factura CELTA Nro ${(data.FacturaID).slice(3,7)} ${(data.FacturaID).slice(7,15)}`,
-        "Importe": (data.FacturaSal).toFixed(2),
+        "nro_cliente_empresa": `${(representante.PersonaNro).toString().padStart(9,'0')}5120185697`,
+        "nro_comprobante": `${IDNoEnergetico ? IDNoEnergetico.toString().padStart(20,'0') : comprobante.toString().padStart(20,'0')}`,
+        "Concepto": `Factura CELTA Nro ${comprobante.slice(3,7)} ${comprobante.slice(7,15)}`,
+        "Importe": total.toFixed(2),
         "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/pay?idcbte=${fc}&type=btn`,
         "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
-        "IdReferenciaOperacion": `${(data.FacturaID).toString().padStart(20,'0')}`,
-        "Detalle": [{'Descripcion': `Suministro: ${data.CuentaNIS}, Factura: ${(data.FacturaID).slice(3,7)}-${(data.FacturaID).slice(7,15)}`, 'Importe': `${(data.FacturaSal).toFixed(2)}`}]
+        "IdReferenciaOperacion": `${IDNoEnergetico ? IDNoEnergetico.toString().padStart(20,'0') : comprobante.toString().padStart(20,'0')}`,
+        //"Detalle": data.map((f) => ({'Descripcion': `Suministro: ${f.CuentaNIS}, Factura: ${f.FacturaID.slice(3,7)}-${f.FacturaID.slice(7,15)}`, 'Importe': `${f.FacturaSal.toFixed(2)}, 'idcbte': '${f.FacturaID}'`}))
+        "Detalle": [{'Descripcion': `Factura CELTA Nro ${comprobante.slice(3,7)}-${comprobante.slice(7,15)}`, 'Importe': total.toFixed(2)}]
       }),
      /*  body: JSON.stringify({
         "nro_cliente_empresa": `${(data.idcbte).toString().padStart(9,0)}5150058293`,
@@ -202,10 +212,14 @@ export async function getFacturaById(doc: string, id: string): Promise<Factura> 
 
 //Cliente empresa CELTA 5120185697
 //Cliente empresa PRUEBA 5150058293
-export async function paymentQR(factura: Factura) {
+export async function paymentQR(facturas: Factura[]) {
   unstable_noStore();
   const sesion = await session();
-  try {   
+  try {
+    const representante = pickComprobante(facturas);
+    const total = facturas.reduce((sum, f) => sum + f.FacturaSal, 0);
+    const comprobante = buildComprobante(representante);
+    const concepto = facturas.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION_QR}`, {
       method: "POST",
       headers: {
@@ -214,14 +228,14 @@ export async function paymentQR(factura: Factura) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "nro_cliente_empresa": `${(factura.PersonaNro).toString().padStart(9,'0')}5120185697`,
-        "nro_comprobante": `${(factura.FacturaID).toString().padStart(20,'0')}`,
-        "Concepto": `Factura CELTA Nro ${(factura.FacturaID).slice(3,7)} ${(factura.FacturaID).slice(7,15)}`,
-        "Importe": (factura.FacturaSal).toFixed(2),
-        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/api/payment?idcbte=${factura.FacturaID}`,
+        "nro_cliente_empresa": `${(representante.PersonaNro).toString().padStart(9,'0')}5120185697`,
+        "nro_comprobante": comprobante,
+        "Concepto": `Factura CELTA Nro ${concepto}`,
+        "Importe": total.toFixed(2),
+        "URL_OK": `https://cajeroenlinea.celtatsas.com.ar/api/payment?idcbte=${comprobante}`,
         "URL_ERROR": `https://cajeroenlinea.celtatsas.com.ar/pay`,
-        "IdReferenciaOperacion": `${(factura.FacturaID).toString().padStart(20,'0')}`,
-        "Detalle": [{'Descripcion': `Suministro: ${factura.CuentaNIS}, Factura: ${(factura.FacturaID).slice(3,7)}-${(factura.FacturaID).slice(7,15)}`, 'Importe': `${(factura.FacturaSal).toFixed(2)}`}]
+        "IdReferenciaOperacion": comprobante,
+        "Detalle": facturas.map((f) => ({'Descripcion': `Suministro: ${f.CuentaNIS}, Factura: ${f.FacturaID.slice(3,7)}-${f.FacturaID.slice(7,15)}`, 'Importe': `${f.FacturaSal.toFixed(2)}`}))
       }),
     });
     const response = await query.json();
