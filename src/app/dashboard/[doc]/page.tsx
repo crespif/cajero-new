@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SelectSumin from "../select";
 import { fetchClient, fetchinvoices } from "@/app/lib/data";
+import { getSettings } from "@/app/lib/settings";
 import Alert from "@/app/ui/alert";
 import SurveyPopup from "@/app/ui/survey-popup";
 
@@ -18,6 +19,7 @@ export default async function Dashboard({
     } 
     const facturas = await fetchinvoices(clientes[0].CuentaDoc);
     //const facturas = await getFacturas(clientes[0].CuentaDoc);
+    const settings = getSettings();
 
     return (
       <>
@@ -25,7 +27,7 @@ export default async function Dashboard({
         {/* Alerta personalizada sin shadcn */}
         {/* <Alert /> */}
         <div className="grow overflow-auto w-full px-6 py-6">
-          <SelectSumin clientes={clientes} facturas={facturas}/>
+          <SelectSumin clientes={clientes} facturas={facturas} settings={settings} />
         </div>
         <Link href="/" className="btn-back">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

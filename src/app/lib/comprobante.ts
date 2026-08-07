@@ -1,15 +1,12 @@
 import { Factura } from "./definitions";
 
-const PUNTOS_VENTA_IMPRIMIBLES = ["0211", "0210"];
-const PUNTOS_VENTA_NO_IMPRIMIBLES = ["0220", "0221", "0224"];
-
-export function pickComprobante(facturas: Factura[]): Factura {
-  const printable = facturas.filter((f) => PUNTOS_VENTA_IMPRIMIBLES.includes(f.FacturaID.slice(3, 7)));
+export function pickComprobante(facturas: Factura[], imprimibles: string[]): Factura {
+  const printable = facturas.filter((f) => imprimibles.includes(f.FacturaID.slice(3, 7)));
   return printable[0] ?? facturas[0];
 }
 
-export function cbteNoEnergetico(facturas: Factura[]): Factura[] {
-  return facturas.filter((f) => PUNTOS_VENTA_NO_IMPRIMIBLES.includes(f.FacturaID.slice(3, 7))) || [];
+export function cbteNoEnergetico(facturas: Factura[], noImprimibles: string[]): Factura[] {
+  return facturas.filter((f) => noImprimibles.includes(f.FacturaID.slice(3, 7))) || [];
 }
 
 // nro_comprobante SIRO: 15 posiciones FacturaID + 1 concepto + 4 MMAA (periodo)

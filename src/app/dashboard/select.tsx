@@ -1,6 +1,7 @@
 "use client";
 
 import { Cliente, Factura, FacturaPagas } from "../lib/definitions";
+import type { AppSettings } from "../lib/settings";
 import { useEffect, useState } from "react";
 import ListInvoice from "./list";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
@@ -9,12 +10,14 @@ import Link from "next/link";
 export default function SelectSumin({
   clientes,
   facturas,
+  settings,
 }: {
   clientes: Cliente[];
   facturas: Factura[];
+  settings: AppSettings;
 }) {
   const [client, setClient] = useState(clientes[0]);
-  const monthExclude = [11];
+  const monthExclude = settings.mesesExcluidos;
 
   const [facts, setFacts] = useState(
     facturas.filter(
@@ -75,7 +78,7 @@ export default function SelectSumin({
         </select>
       </div>
 
-      {facts.length > 0 && <ListInvoice facturas={facts} cliente={client} />}
+      {facts.length > 0 && <ListInvoice facturas={facts} cliente={client} settings={settings} />}
 
       {loading ? (
         <div className="loading-dots">

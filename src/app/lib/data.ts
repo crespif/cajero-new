@@ -5,6 +5,7 @@ import { createClient } from "soap";
 import { Factura } from "./definitions";
 import { unstable_noStore } from "next/cache";
 import { buildComprobante, pickComprobante, cbteNoEnergetico } from "./comprobante";
+import { getSettings } from "./settings";
 
 export async function fetchClient(id: number) {
   unstable_noStore();
@@ -78,8 +79,9 @@ export async function session(){
 export async function payment(sesion: any, data: Factura[], fc: string) {
   try {
   
-    const representante = pickComprobante(data);
-    const noEnergetico = cbteNoEnergetico(data);
+    const settings = getSettings();
+    const representante = pickComprobante(data, settings.puntosVentaImprimibles);
+    const noEnergetico = cbteNoEnergetico(data, settings.puntosVentaNoImprimibles);
     const total = data.reduce((sum, f) => sum + f.FacturaSal, 0);
     const comprobante = representante.FacturaID;
     const IDNoEnergetico = noEnergetico[0]?.FacturaID;
@@ -216,7 +218,8 @@ export async function paymentQR(facturas: Factura[]) {
   unstable_noStore();
   const sesion = await session();
   try {
-    const representante = pickComprobante(facturas);
+    const settings = getSettings();
+    const representante = pickComprobante(facturas, settings.puntosVentaImprimibles);
     const total = facturas.reduce((sum, f) => sum + f.FacturaSal, 0);
     const comprobante = buildComprobante(representante);
     const concepto = facturas.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
