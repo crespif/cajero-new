@@ -19,7 +19,7 @@ export default async function Dashboard({
     } 
     const facturas = await fetchinvoices(clientes[0].CuentaDoc);
     //const facturas = await getFacturas(clientes[0].CuentaDoc);
-    const settings = getSettings();
+    const settings = await getSettings();
 
     return (
       <>

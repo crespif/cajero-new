@@ -10,6 +10,6 @@ export default async function AdminPage() {
     return <AdminLogin />;
   }
 
-  const settings = getSettings();
+  const settings = await getSettings();
   return <AdminPanel initialSettings={settings} />;
 }
