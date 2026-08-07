@@ -63,4 +63,5 @@ export interface FacturaPagas {
   CompSdo: number;
   CompTpo: number;
   CompVto: string;
+  pagas?: FacturaPagas[];
 }
