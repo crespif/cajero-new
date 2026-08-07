@@ -79,7 +79,7 @@ export async function session(){
 export async function payment(sesion: any, data: Factura[], fc: string) {
   try {
   
-    const settings = getSettings();
+    const settings = await getSettings();
     const representante = pickComprobante(data, settings.puntosVentaImprimibles);
     const noEnergetico = cbteNoEnergetico(data, settings.puntosVentaNoImprimibles);
     const total = data.reduce((sum, f) => sum + f.FacturaSal, 0);
@@ -218,7 +218,7 @@ export async function paymentQR(facturas: Factura[]) {
   unstable_noStore();
   const sesion = await session();
   try {
-    const settings = getSettings();
+    const settings = await getSettings();
     const representante = pickComprobante(facturas, settings.puntosVentaImprimibles);
     const total = facturas.reduce((sum, f) => sum + f.FacturaSal, 0);
     const comprobante = buildComprobante(representante);

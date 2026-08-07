@@ -26,8 +26,13 @@ export async function isAdminAuthenticated(): Promise<boolean> {
 
 export async function updateAdminSettings(settings: AppSettings): Promise<{ ok: boolean }> {
   if (!isValidSessionToken(cookies().get(ADMIN_COOKIE_NAME)?.value)) return { ok: false };
-  saveSettings(settings);
-  return { ok: true };
+  try {
+    await saveSettings(settings);
+    return { ok: true };
+  } catch (error) {
+    console.error("Error al guardar la configuración:", error);
+    return { ok: false };
+  }
 }
 
 export async function getAdminSettings(): Promise<AppSettings> {
