@@ -61,7 +61,7 @@ export async function getSettings(): Promise<AppSettings> {
   try {
     const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
       headers: internalHeaders(),
-      next: { revalidate: 30 },
+      cache: "no-store",
     });
     if (!res.ok) {
       console.error(`getSettings: HTTP ${res.status} en ${res.url}`);
