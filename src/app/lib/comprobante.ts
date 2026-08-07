@@ -1,8 +1,13 @@
-import { Factura } from "./definitions";
+import { Factura, FacturaPagas } from "./definitions";
 
 export function pickComprobante(facturas: Factura[], imprimibles: string[]): Factura {
   const printable = facturas.filter((f) => imprimibles.includes(f.FacturaID.slice(3, 7)));
   return printable[0] ?? facturas[0];
+}
+
+export function pickComprobantePagas(pagas: FacturaPagas[], imprimibles: string[]): FacturaPagas {
+  const printable = pagas.filter((p) => imprimibles.includes(String(p.CompPtoV).padStart(4, "0")));
+  return printable[0] ?? pagas[0];
 }
 
 export function cbteNoEnergetico(facturas: Factura[], noImprimibles: string[]): Factura[] {

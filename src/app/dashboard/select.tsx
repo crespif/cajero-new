@@ -2,10 +2,30 @@
 
 import { Cliente, Factura, FacturaPagas } from "../lib/definitions";
 import type { AppSettings } from "../lib/settings";
+import { pickComprobantePagas } from "../lib/comprobante";
 import { useEffect, useState } from "react";
 import ListInvoice from "./list";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+
+function groupFacturasPagas(pagas: FacturaPagas[]): FacturaPagas[] {
+  const groups = new Map<string, FacturaPagas[]>();
+  for (const p of pagas) {
+    const key = [p.CompFec, p.CompVto, p.CliCod, p.SumNro].join("|");
+    const group = groups.get(key);
+    if (group) group.push(p);
+    else groups.set(key, [p]);
+  }
+  return Array.from(groups.values()).map((group) => {
+    if (group.length === 1) return group[0];
+    return {
+      ...group[0],
+      CompImp: group.reduce((sum, p) => sum + p.CompImp, 0),
+      CompSdo: group.reduce((sum, p) => sum + p.CompSdo, 0),
+      pagas: group,
+    };
+  });
+}
 
 export default function SelectSumin({
   clientes,
@@ -90,8 +110,10 @@ export default function SelectSumin({
         factsPagas.length > 0 && (
           <div className="paid-section anim-fade-in">
             <p className="section-label">Últimas facturas pagas</p>
-            {factsPagas.map((factura, index) => {
-              const pdfHref = `/api/factura/pdf/01${client.PersonaNro.toString().padStart(6, "0")}${client.CuentaNro.toString().padStart(6, "0")}${new Date(factura.CompFec).getFullYear()}${(new Date(factura.CompFec).getMonth() + 1).toString().padStart(2, "0")}${(new Date(factura.CompFec).getDate() + 1).toString().padStart(2, "0")}${String(factura.CompTpo).padStart(2, "0")}${factura.CompLet}${String(factura.CompPtoV).padStart(4, "0")}${String(factura.CompNro).padStart(8, "0")}`;
+            {groupFacturasPagas(factsPagas).map((factura, index) => {
+              const underlying = factura.pagas ?? [factura];
+              const representante = pickComprobantePagas(underlying, settings.puntosVentaImprimibles);
+              const pdfHref = `/api/factura/pdf/01${client.PersonaNro.toString().padStart(6, "0")}${client.CuentaNro.toString().padStart(6, "0")}${new Date(representante.CompFec).getFullYear()}${(new Date(representante.CompFec).getMonth() + 1).toString().padStart(2, "0")}${(new Date(representante.CompFec).getDate() + 1).toString().padStart(2, "0")}${String(representante.CompTpo).padStart(2, "0")}${representante.CompLet}${String(representante.CompPtoV).padStart(4, "0")}${String(representante.CompNro).padStart(8, "0")}`;
 
               return (
                 <div
@@ -101,7 +123,7 @@ export default function SelectSumin({
                 >
                   <div className="paid-info">
                     <span>
-                      N° <strong>{`${factura.CompPtoV}-${factura.CompNro}`}</strong>
+                      N° <strong>{`${representante.CompPtoV}-${representante.CompNro}`}</strong>
                     </span>
                     <span>
                       <strong>
