@@ -28,6 +28,21 @@ function internalBaseUrl(): string {
   return "http://localhost:3000";
 }
 
+function internalHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const headers: Record<string, string> = {
+    "x-internal-token": computeSessionToken(),
+    ...extra,
+  };
+  // Si tenés "Deployment Protection" activo en Vercel, un fetch a tu propia
+  // URL interna se bloquea con 401 antes de llegar acá. Generá un secreto en
+  // Settings → Deployment Protection → Protection Bypass for Automation y
+  // cargalo como env var VERCEL_AUTOMATION_BYPASS_SECRET para saltearlo.
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  }
+  return headers;
+}
+
 export async function getSettings(): Promise<AppSettings> {
   if (!useRemote) {
     try {
@@ -39,13 +54,17 @@ export async function getSettings(): Promise<AppSettings> {
   }
   try {
     const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
-      headers: { "x-internal-token": computeSessionToken() },
+      headers: internalHeaders(),
       next: { revalidate: 30 },
     });
-    if (!res.ok) return DEFAULT_SETTINGS;
+    if (!res.ok) {
+      console.error(`getSettings: HTTP ${res.status} en ${res.url}`);
+      return DEFAULT_SETTINGS;
+    }
     const data = await res.json();
     return { ...DEFAULT_SETTINGS, ...data };
-  } catch {
+  } catch (error) {
+    console.error("getSettings: fetch falló", error);
     return DEFAULT_SETTINGS;
   }
 }
@@ -58,13 +77,11 @@ export async function saveSettings(settings: AppSettings): Promise<void> {
   }
   const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
     method: "PUT",
-    headers: {
-      "content-type": "application/json",
-      "x-internal-token": computeSessionToken(),
-    },
+    headers: internalHeaders({ "content-type": "application/json" }),
     body: JSON.stringify(settings),
   });
   if (!res.ok) {
-    throw new Error("No se pudo guardar la configuración");
+    const body = await res.text().catch(() => "");
+    throw new Error(`No se pudo guardar la configuración (HTTP ${res.status} en ${res.url}): ${body.slice(0, 300)}`);
   }
 }
