@@ -24,6 +24,12 @@ const useRemote = !!process.env.BLOB_READ_WRITE_TOKEN;
 // Next 14 no procesa bien fuera de un Route Handler. Por eso la lectura/
 // escritura real vive en /api/admin-settings y acá solo se llama por HTTP.
 function internalBaseUrl(): string {
+  // La URL efímera *.vercel.app (VERCEL_URL) queda detrás de Vercel
+  // Authentication (SSO) en este proyecto, así que un fetch propio a esa URL
+  // se bloquea antes de llegar a nuestra ruta. El dominio de producción no
+  // tiene esa protección, así que lo usamos ahí en vez de VERCEL_URL.
+  if (process.env.APP_BASE_URL) return process.env.APP_BASE_URL;
+  if (process.env.VERCEL_ENV === "production") return "https://cajeroenlinea.celtatsas.com.ar";
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "http://localhost:3000";
 }
