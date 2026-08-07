@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { put, head } from "@vercel/blob";
+import { computeSessionToken } from "./adminAuth";
 
 export interface AppSettings {
   puntosVentaImprimibles: string[];
@@ -16,39 +16,55 @@ export const DEFAULT_SETTINGS: AppSettings = {
   mesesExcluidos: [11],
 };
 
-const BLOB_PATHNAME = "settings.json";
 const LOCAL_PATH = path.join(process.cwd(), "data", "settings.json");
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+const useRemote = !!process.env.BLOB_READ_WRITE_TOKEN;
+
+// Server Actions y Server Components no pueden importar @vercel/blob
+// directamente: su dependencia undici usa sintaxis que el compilador de
+// Next 14 no procesa bien fuera de un Route Handler. Por eso la lectura/
+// escritura real vive en /api/admin-settings y acá solo se llama por HTTP.
+function internalBaseUrl(): string {
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+}
 
 export async function getSettings(): Promise<AppSettings> {
-  if (useBlob) {
+  if (!useRemote) {
     try {
-      const blob = await head(BLOB_PATHNAME);
-      const res = await fetch(blob.url, { cache: "no-store" });
-      const data = await res.json();
-      return { ...DEFAULT_SETTINGS, ...data };
+      const raw = fs.readFileSync(LOCAL_PATH, "utf-8");
+      return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
     } catch {
       return DEFAULT_SETTINGS;
     }
   }
   try {
-    const raw = fs.readFileSync(LOCAL_PATH, "utf-8");
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
+      headers: { "x-internal-token": computeSessionToken() },
+      next: { revalidate: 30 },
+    });
+    if (!res.ok) return DEFAULT_SETTINGS;
+    const data = await res.json();
+    return { ...DEFAULT_SETTINGS, ...data };
   } catch {
     return DEFAULT_SETTINGS;
   }
 }
 
 export async function saveSettings(settings: AppSettings): Promise<void> {
-  if (useBlob) {
-    await put(BLOB_PATHNAME, JSON.stringify(settings, null, 2), {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
+  if (!useRemote) {
+    fs.mkdirSync(path.dirname(LOCAL_PATH), { recursive: true });
+    fs.writeFileSync(LOCAL_PATH, JSON.stringify(settings, null, 2), "utf-8");
     return;
   }
-  fs.mkdirSync(path.dirname(LOCAL_PATH), { recursive: true });
-  fs.writeFileSync(LOCAL_PATH, JSON.stringify(settings, null, 2), "utf-8");
+  const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      "x-internal-token": computeSessionToken(),
+    },
+    body: JSON.stringify(settings),
+  });
+  if (!res.ok) {
+    throw new Error("No se pudo guardar la configuración");
+  }
 }
