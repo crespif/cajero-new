@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npx next *)",
       "Bash(npm install *)",
-      "Bash(node -e \"console.log\\(require\\('./node_modules/@vercel/blob/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@vercel/blob/package.json'\\).version\\)\")",
+      "Bash(node -e ' *)",
+      "Read(//tmp/**)"
     ]
   }
 }
