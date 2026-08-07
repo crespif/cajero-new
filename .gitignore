@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# panel de administración (configuración editable en runtime)
+/data/settings.json
+
 # vercel
 .vercel
 

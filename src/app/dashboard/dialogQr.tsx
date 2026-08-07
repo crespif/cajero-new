@@ -13,6 +13,7 @@ interface DialogQrProps {
   setOpenQR: (open: boolean) => void;
   strQr: string;
   invoice: Factura | null;
+  puntosVentaImprimibles: string[];
 }
 
 type Status = "waiting" | "success" | "timeout";
@@ -21,7 +22,7 @@ const POLL_INTERVAL_MS = 5000;
 const MAX_ATTEMPTS = 60; // 5 minutos
 //const MAX_ATTEMPTS = 36; // para testing, 3 minutos
 
-export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQrProps) {
+export default function DialogQr({ openQR, setOpenQR, strQr, invoice, puntosVentaImprimibles }: DialogQrProps) {
   const [status, setStatus] = useState<Status>("waiting");
   const [attempts, setAttempts] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -35,7 +36,7 @@ export default function DialogQr({ openQR, setOpenQR, strQr, invoice }: DialogQr
   };
 
   const facturasList = invoice ? (invoice.facturas ?? [invoice]) : [];
-  const representante = facturasList.length > 0 ? pickComprobante(facturasList) : null;
+  const representante = facturasList.length > 0 ? pickComprobante(facturasList, puntosVentaImprimibles) : null;
   const reference = representante ? buildComprobante(representante) : "";
 
   useEffect(() => {

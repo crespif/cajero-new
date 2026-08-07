@@ -13,6 +13,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CheckPay, paymentQR } from "../lib/data";
 import { buildComprobante, pickComprobante } from "../lib/comprobante";
+import type { AppSettings } from "../lib/settings";
 import DialogQr from "./dialogQr";
 import Loading from "./loading";
 import { toast } from "sonner";
@@ -40,9 +41,11 @@ function groupFacturas(facturas: Factura[]): Factura[] {
 export default function ListInvoice({
   facturas: rawFacturas,
   cliente,
+  settings,
 }: {
   facturas: Factura[];
   cliente: Cliente;
+  settings: AppSettings;
 }) {
   const facturas = groupFacturas(rawFacturas);
   const [open, setOpen] = useState(false);
@@ -79,7 +82,7 @@ export default function ListInvoice({
       return;
     }
     const underlying = row.facturas ?? [row];
-    const comprobante = buildComprobante(pickComprobante(underlying));
+    const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
     const response = await CheckPay(comprobante, "QR");
     if (response?.PagoExitoso) {
       setLoading(false);
@@ -117,7 +120,13 @@ export default function ListInvoice({
       ) : (
         <>
           {fact && openQR && (
-            <DialogQr openQR={openQR} setOpenQR={setOpenQR} strQr={strQr} invoice={fact} />
+            <DialogQr
+              openQR={openQR}
+              setOpenQR={setOpenQR}
+              strQr={strQr}
+              invoice={fact}
+              puntosVentaImprimibles={settings.puntosVentaImprimibles}
+            />
           )}
           <p className="section-label">Facturas adeudadas</p>
           {facturas.map((invoice, index) => {
@@ -128,7 +137,7 @@ export default function ListInvoice({
             const isSoon = !isOverdue && daysUntilDue <= 5;
             const dueDateStr = `${dueDate.getUTCDate().toString().padStart(2, "0")}/${dueDate.getUTCMonth() + 1}/${dueDate.getUTCFullYear()}`;
             const underlying = invoice.facturas ?? [invoice];
-            const representante = pickComprobante(underlying);
+            const representante = pickComprobante(underlying, settings.puntosVentaImprimibles);
             const invoiceLabel = `${representante.FacturaID.slice(3, 7)}-${representante.FacturaID.slice(7, 15)}`;
             const pdfHrefs = [`/api/factura/pdf/01${cliente.PersonaNro.toString().padStart(6, "0")}${cliente.CuentaNro.toString().padStart(6, "0")}${new Date(representante.FacturaFE).getFullYear()}${(new Date(representante.FacturaFE).getMonth() + 1).toString().padStart(2, "0")}${new Date(representante.FacturaFE).getUTCDate().toString().padStart(2, "0")}${representante.FacturaID}`];
 
@@ -191,12 +200,14 @@ export default function ListInvoice({
                       <QrCodeIcon />
                       QR
                     </button>
-                  {/*   {dueDate.getTime() + 5 * 86400000 > now.getTime() && invoice.FacturaSal < 300000.01 && (
-                      <button className="inv-btn inv-btn-cupon" onClick={() => handleLinkClick(invoice)}>
-                        <DocumentTextIcon />
-                        Cupón
-                      </button>
-                    )} */}
+                    {settings.mostrarCuponPago &&
+                      dueDate.getTime() + 5 * 86400000 > now.getTime() &&
+                      invoice.FacturaSal < 300000.01 && (
+                        <button className="inv-btn inv-btn-cupon" onClick={() => handleLinkClick(invoice)}>
+                          <DocumentTextIcon />
+                          Cupón
+                        </button>
+                      )}
                     <div className="hidden md:flex gap-1">
                       {pdfHrefs.map((href, i) => (
                         <Link key={i} href={href} target="_blank" className="inv-btn inv-btn-pdf">
