@@ -12,7 +12,7 @@ import Dialog from "../ui/dialog";
 import { useState } from "react";
 import Link from "next/link";
 import { CheckPay, paymentQR } from "../lib/data";
-import { buildComprobante, pickComprobante } from "../lib/comprobante";
+import { buildComprobante, cbteNoEnergetico, pickComprobante } from "../lib/comprobante";
 import type { AppSettings } from "../lib/settings";
 import DialogQr from "./dialogQr";
 import Loading from "./loading";
@@ -82,7 +82,10 @@ export default function ListInvoice({
       return;
     }
     const underlying = row.facturas ?? [row];
+    console.log("Facturas subyacentes:", underlying);
     const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
+    //const comprobante = buildComprobante(cbteNoEnergetico(underlying, settings.puntosVentaNoImprimibles)[0] ?? underlying[0]);
+    //console.log("Comprobante generado:", comprobante);
     const response = await CheckPay(comprobante, "QR");
     if (response?.PagoExitoso) {
       setLoading(false);

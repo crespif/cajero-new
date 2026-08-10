@@ -221,8 +221,10 @@ export async function paymentQR(facturas: Factura[]) {
     const settings = await getSettings();
     const representante = pickComprobante(facturas, settings.puntosVentaImprimibles);
     const total = facturas.reduce((sum, f) => sum + f.FacturaSal, 0);
-    const comprobante = buildComprobante(representante);
-    const concepto = facturas.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
+    //const comprobante = buildComprobante(representante);
+    const comprobante = buildComprobante(cbteNoEnergetico(facturas, settings.puntosVentaNoImprimibles)[0] ?? representante).padStart(20, '0');
+    //const concepto = facturas.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
+    const concepto = representante.FacturaID.slice(3,7) + " " + representante.FacturaID.slice(7,15);
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION_QR}`, {
       method: "POST",
       headers: {
@@ -242,6 +244,7 @@ export async function paymentQR(facturas: Factura[]) {
       }),
     });
     const response = await query.json();
+    //console.log("Respuesta de paymentQR:", response);
     if (response.error) {
       console.error("Error al generar el código QR:", response.error);
       return;
