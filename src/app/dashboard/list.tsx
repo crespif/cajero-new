@@ -82,7 +82,7 @@ export default function ListInvoice({
       return;
     }
     const underlying = row.facturas ?? [row];
-    console.log("Facturas subyacentes:", underlying);
+    //console.log("Facturas subyacentes:", underlying);
     const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
     //const comprobante = buildComprobante(cbteNoEnergetico(underlying, settings.puntosVentaNoImprimibles)[0] ?? underlying[0]);
     //console.log("Comprobante generado:", comprobante);
