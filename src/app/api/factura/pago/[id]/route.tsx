@@ -1,6 +1,7 @@
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     const id = params.id;
     try {
+        console.log(`Fetching payment for ID: ${id}`);
         const query = await fetch(`http://200.45.235.121:3000/payments/${id}`);
         //const query = await fetch(`http://localhost:3000/payments/${id}`);
         const data = await query.json();

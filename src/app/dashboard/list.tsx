@@ -73,14 +73,14 @@ export default function ListInvoice({
   };
 
   const handleQr = async (row: Factura) => {
-    setLoading(true);
+        setLoading(true);
     const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
     const data = await query.json();
-    if (!data.error) {
+   /*  if (!data.error) {
       setLoading(false);
       setOpen(true);
       return;
-    }
+    } */
     const underlying = row.facturas ?? [row];
     const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
     const response = await CheckPay(comprobante, "QR");

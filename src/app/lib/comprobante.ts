@@ -19,5 +19,6 @@ export function buildComprobante(factura: Factura): string {
   const periodo = factura.FacturaPer.toString().padStart(6, "0");
   const mm = periodo.slice(4, 6);
   const aa = periodo.slice(2, 4);
-  return `${factura.FacturaID}0${mm}${aa}`;
+  //return `${factura.FacturaID}0${mm}${aa}`;
+  return `${factura.FacturaID}`;
 }
