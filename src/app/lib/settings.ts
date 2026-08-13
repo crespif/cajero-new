@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { computeSessionToken } from "./adminAuth";
 
 export interface AppSettings {
   puntosVentaImprimibles: string[];
@@ -17,36 +16,23 @@ export const DEFAULT_SETTINGS: AppSettings = {
 };
 
 const LOCAL_PATH = path.join(process.cwd(), "data", "settings.json");
-const useRemote = !!process.env.BLOB_READ_WRITE_TOKEN;
 
-// Server Actions y Server Components no pueden importar @vercel/blob
-// directamente: su dependencia undici usa sintaxis que el compilador de
-// Next 14 no procesa bien fuera de un Route Handler. Por eso la lectura/
-// escritura real vive en /api/admin-settings y acá solo se llama por HTTP.
-function internalBaseUrl(): string {
-  // La URL efímera *.vercel.app (VERCEL_URL) queda detrás de Vercel
-  // Authentication (SSO) en este proyecto, así que un fetch propio a esa URL
-  // se bloquea antes de llegar a nuestra ruta. El dominio de producción no
-  // tiene esa protección, así que lo usamos ahí en vez de VERCEL_URL.
-  if (process.env.APP_BASE_URL) return process.env.APP_BASE_URL;
-  if (process.env.VERCEL_ENV === "production") return "https://cajeroenlinea.celtatsas.com.ar";
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
-}
+const GIST_ID = process.env.GITHUB_GIST_ID;
+const GIST_TOKEN = process.env.GITHUB_GIST_TOKEN;
+const GIST_FILENAME = "settings.json";
+const useRemote = !!GIST_ID && !!GIST_TOKEN;
 
-function internalHeaders(extra: Record<string, string> = {}): Record<string, string> {
-  const headers: Record<string, string> = {
-    "x-internal-token": computeSessionToken(),
-    ...extra,
+// Cache en memoria de proceso, corta, para no pegarle a la API de GitHub en
+// cada request del dashboard (rate limit) sin reintroducir el delay largo
+// que tenía el cache HTTP de Next.
+let cache: { settings: AppSettings; expiresAt: number } | null = null;
+const CACHE_TTL_MS = 10_000;
+
+function githubHeaders() {
+  return {
+    Authorization: `Bearer ${GIST_TOKEN}`,
+    Accept: "application/vnd.github+json",
   };
-  // Si tenés "Deployment Protection" activo en Vercel, un fetch a tu propia
-  // URL interna se bloquea con 401 antes de llegar acá. Generá un secreto en
-  // Settings → Deployment Protection → Protection Bypass for Automation y
-  // cargalo como env var VERCEL_AUTOMATION_BYPASS_SECRET para saltearlo.
-  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
-    headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  }
-  return headers;
 }
 
 export async function getSettings(): Promise<AppSettings> {
@@ -58,20 +44,30 @@ export async function getSettings(): Promise<AppSettings> {
       return DEFAULT_SETTINGS;
     }
   }
+
+  if (cache && cache.expiresAt > Date.now()) {
+    return cache.settings;
+  }
+
   try {
-    const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
-      headers: internalHeaders(),
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      headers: githubHeaders(),
       cache: "no-store",
     });
     if (!res.ok) {
-      console.error(`getSettings: HTTP ${res.status} en ${res.url}`);
-      return DEFAULT_SETTINGS;
+      console.error(`getSettings: GitHub respondió HTTP ${res.status}`);
+      return cache?.settings ?? DEFAULT_SETTINGS;
     }
-    const data = await res.json();
-    return { ...DEFAULT_SETTINGS, ...data };
+    const gist = await res.json();
+    const content = gist.files?.[GIST_FILENAME]?.content;
+    const settings: AppSettings = content
+      ? { ...DEFAULT_SETTINGS, ...JSON.parse(content) }
+      : DEFAULT_SETTINGS;
+    cache = { settings, expiresAt: Date.now() + CACHE_TTL_MS };
+    return settings;
   } catch (error) {
-    console.error("getSettings: fetch falló", error);
-    return DEFAULT_SETTINGS;
+    console.error("getSettings: fetch a GitHub falló", error);
+    return cache?.settings ?? DEFAULT_SETTINGS;
   }
 }
 
@@ -81,13 +77,19 @@ export async function saveSettings(settings: AppSettings): Promise<void> {
     fs.writeFileSync(LOCAL_PATH, JSON.stringify(settings, null, 2), "utf-8");
     return;
   }
-  const res = await fetch(`${internalBaseUrl()}/api/admin-settings`, {
-    method: "PUT",
-    headers: internalHeaders({ "content-type": "application/json" }),
-    body: JSON.stringify(settings),
+
+  const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    method: "PATCH",
+    headers: { ...githubHeaders(), "content-type": "application/json" },
+    body: JSON.stringify({
+      files: { [GIST_FILENAME]: { content: JSON.stringify(settings, null, 2) } },
+    }),
   });
+
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`No se pudo guardar la configuración (HTTP ${res.status} en ${res.url}): ${body.slice(0, 300)}`);
+    throw new Error(`No se pudo guardar la configuración (HTTP ${res.status} en GitHub Gist): ${body.slice(0, 300)}`);
   }
+
+  cache = { settings, expiresAt: Date.now() + CACHE_TTL_MS };
 }

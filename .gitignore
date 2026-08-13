@@ -44,3 +44,6 @@ next-env.d.ts
 /public/workbox-e43f5367.js
 /public/workbox-e43f5367.js.map
 /public/sw.js*
+
+/.claude
+/.claude/*
