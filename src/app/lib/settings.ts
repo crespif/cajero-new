@@ -10,7 +10,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  puntosVentaImprimibles: ["0211", "0210"],
+  puntosVentaImprimibles: ["0211", "0210", "0200"],
   puntosVentaNoImprimibles: ["0220", "0221", "0224"],
   mostrarCuponPago: false,
   mesesExcluidos: [11],

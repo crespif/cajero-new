@@ -140,8 +140,10 @@ export default function AdminPanel({ initialSettings }: { initialSettings: AppSe
                 type="button"
                 onClick={() => toggleMes(mes)}
                 className="inv-btn"
-                style={active ? { background: "var(--c-warn, #f59e0b)", color: "#fff" } : undefined}
+                aria-pressed={active}
+                style={active ? { background: "var(--c-warn, #f59e0b)", color: "#fff", fontWeight: 600 } : undefined}
               >
+                {active ? "✓ " : ""}
                 {nombre}
               </button>
             );
