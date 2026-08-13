@@ -18,7 +18,7 @@ import DialogQr from "./dialogQr";
 import Loading from "./loading";
 import { toast } from "sonner";
 
-function groupFacturas(facturas: Factura[]): Factura[] {
+function groupFacturas(facturas: Factura[], settings: AppSettings): Factura[] {
   const groups = new Map<string, Factura[]>();
   for (const f of facturas) {
     const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA].join("|");
@@ -28,9 +28,12 @@ function groupFacturas(facturas: Factura[]): Factura[] {
   }
   return Array.from(groups.values()).map((group) => {
     if (group.length === 1) return group[0];
+    const noImprimibles = group.filter((f) => settings.puntosVentaNoImprimibles.includes(f.FacturaID.slice(3, 7)));
     return {
       ...group[0],
-      FacturaID: group.map((f) => f.FacturaID).join(","),
+      // El FacturaID depende de punto de venta no imprimible, si el grupo no tiene, es el imprimible, si tiene, es el no imprimible. Por eso se toma el primero del grupo.
+      FacturaID: noImprimibles.length > 0 ? noImprimibles[0].FacturaID : group[0].FacturaID,
+      //FacturaID: group.map((f) => f.FacturaID).join(","),
       FacturaImp: group.reduce((sum, f) => sum + f.FacturaImp, 0),
       FacturaSal: group.reduce((sum, f) => sum + f.FacturaSal, 0),
       facturas: group,
@@ -47,7 +50,7 @@ export default function ListInvoice({
   cliente: Cliente;
   settings: AppSettings;
 }) {
-  const facturas = groupFacturas(rawFacturas);
+  const facturas = groupFacturas(rawFacturas, settings);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -73,7 +76,7 @@ export default function ListInvoice({
   };
 
   const handleQr = async (row: Factura) => {
-        setLoading(true);
+    setLoading(true);
     const query = await fetch(`/api/factura/pago/${row.FacturaID}`);
     const data = await query.json();
     if (!data.error) {
@@ -83,10 +86,9 @@ export default function ListInvoice({
     }
     const underlying = row.facturas ?? [row];
     //console.log("Facturas subyacentes:", underlying);
-    const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
+    //const comprobante = buildComprobante(pickComprobante(underlying, settings.puntosVentaImprimibles));
     //const comprobante = buildComprobante(cbteNoEnergetico(underlying, settings.puntosVentaNoImprimibles)[0] ?? underlying[0]);
-    //console.log("Comprobante generado:", comprobante);
-    const response = await CheckPay(comprobante, "QR");
+    const response = await CheckPay(row.FacturaID, "QR");
     if (response?.PagoExitoso) {
       setLoading(false);
       setOpen(true);
