@@ -85,7 +85,6 @@ export async function payment(sesion: any, data: Factura[], fc: string) {
     const total = data.reduce((sum, f) => sum + f.FacturaSal, 0);
     const comprobante = representante.FacturaID;
     const IDNoEnergetico = noEnergetico[0]?.FacturaID;
-
     //const concepto = data.map((f) => `${f.FacturaID.slice(3,7)} ${f.FacturaID.slice(7,15)}`).join(" + ");
     const query = await fetch(`${process.env.NEXT_PUBLIC_URL_SIRO_PAGO_PRODUCCION}`, {
       method: "POST",

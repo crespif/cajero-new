@@ -66,7 +66,10 @@ export default function ListInvoice({
       setLoading(false);
       setOpen(true);
     } else {
-      router.push(`/pay/${invoice.FacturaID}?doc=${cliente.CuentaDoc}`);
+      //router.push(`/pay/${invoice.FacturaID}?doc=${cliente.CuentaDoc}`);
+      const ids = invoice.facturas?.map((f) => f.FacturaID) || [invoice.FacturaID];
+      const fc = encodeURIComponent(ids.join(","));
+      router.push(`/pay/${fc}?doc=${cliente.CuentaDoc}`);
     }
   };
 
