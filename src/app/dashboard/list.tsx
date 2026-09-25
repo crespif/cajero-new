@@ -20,12 +20,17 @@ import { toast } from "sonner";
 
 function groupFacturas(facturas: Factura[], settings: AppSettings): Factura[] {
   const groups = new Map<string, Factura[]>();
-  for (const f of facturas) {
+  facturas.forEach((f, i) => {
+    // Solo se agrupan las facturas a partir del periodo 07/2026 inclusive
+    if (Number(f.FacturaPer) < 202607) {
+      groups.set(`single|${i}`, [f]);
+      return;
+    }
     const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA].join("|");
     const group = groups.get(key);
     if (group) group.push(f);
     else groups.set(key, [f]);
-  }
+  });
   return Array.from(groups.values()).map((group) => {
     if (group.length === 1) return group[0];
     const noImprimibles = group.filter((f) => settings.puntosVentaNoImprimibles.includes(f.FacturaID.slice(3, 7)));
