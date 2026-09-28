@@ -22,10 +22,10 @@ function groupFacturas(facturas: Factura[], settings: AppSettings): Factura[] {
   const groups = new Map<string, Factura[]>();
   facturas.forEach((f, i) => {
     // Solo se agrupan las facturas a partir del periodo 07/2026 inclusive
-    if (Number(f.FacturaPer) < 202607) {
+    /* if (Number(f.FacturaPer) < 202606) {
       groups.set(`single|${i}`, [f]);
       return;
-    }
+    } */
     const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA].join("|");
     const group = groups.get(key);
     if (group) group.push(f);
