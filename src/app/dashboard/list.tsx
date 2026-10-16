@@ -26,7 +26,7 @@ function groupFacturas(facturas: Factura[], settings: AppSettings): Factura[] {
       groups.set(`single|${i}`, [f]);
       return;
     } */
-    const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA].join("|");
+    const key = [f.FacturaFE, f.FacturaPer, f.FacturaFV, f.FacturaDA, f.PersonaNro, f.CuentaNro, f.CuentaNIS, f.CuentaUnA, f.FacturaTran].join("|");
     const group = groups.get(key);
     if (group) group.push(f);
     else groups.set(key, [f]);

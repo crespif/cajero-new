@@ -248,6 +248,16 @@ export async function paymentQR(facturas: Factura[]) {
       console.error("Error al generar el código QR:", response.error);
       return;
     }
+    // Registra el QR como pendiente para que la API concilie el pago aunque el usuario cierre el navegador
+    try {
+      await fetch(`http://200.45.235.121:3000/payments/pending`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idcbte: comprobante, type: "QR" }),
+      });
+    } catch (error) {
+      console.error("Error al registrar el pago pendiente:", error);
+    }
     return response;
     
   } catch (error) {
