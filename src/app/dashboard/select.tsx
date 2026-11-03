@@ -82,6 +82,11 @@ export default function SelectSumin({
     setClient(selected);
   };
 
+  // Oculta las pagas que coinciden con una impaga (misma emisión, vencimiento, cliente y suministro)
+  const dia = (d: string) => String(d).slice(0, 10);
+  const impagas = new Set(facts.map((f) => [dia(f.FacturaFE), dia(f.FacturaFV), f.PersonaNro, f.CuentaNro].join("|")));
+  const pagasVisibles = factsPagas.filter((p) => !impagas.has([dia(p.CompFec), dia(p.CompVto), p.CliCod, p.SumNro].join("|")));
+
   return (
     <>
       <div className="dash-header">
@@ -107,10 +112,10 @@ export default function SelectSumin({
           <span />
         </div>
       ) : (
-        factsPagas.length > 0 && (
+        pagasVisibles.length > 0 && (
           <div className="paid-section anim-fade-in">
             <p className="section-label">Últimas facturas pagas</p>
-            {groupFacturasPagas(factsPagas).map((factura, index) => {
+            {(client.PersonaNro == 38564 ? pagasVisibles : groupFacturasPagas(pagasVisibles)).map((factura, index) => {
               const underlying = factura.pagas ?? [factura];
               const representante = pickComprobantePagas(underlying, settings.puntosVentaImprimibles);
               const pdfHref = `/api/factura/pdf/01${client.PersonaNro.toString().padStart(6, "0")}${client.CuentaNro.toString().padStart(6, "0")}${new Date(representante.CompFec).getFullYear()}${(new Date(representante.CompFec).getMonth() + 1).toString().padStart(2, "0")}${(new Date(representante.CompFec).getDate() + 1).toString().padStart(2, "0")}${String(representante.CompTpo).padStart(2, "0")}${representante.CompLet}${String(representante.CompPtoV).padStart(4, "0")}${String(representante.CompNro).padStart(8, "0")}`;

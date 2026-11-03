@@ -55,7 +55,7 @@ export default function ListInvoice({
   cliente: Cliente;
   settings: AppSettings;
 }) {
-  const facturas = groupFacturas(rawFacturas, settings);
+  const facturas = cliente.PersonaNro == 38564 ? rawFacturas : groupFacturas(rawFacturas, settings);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
