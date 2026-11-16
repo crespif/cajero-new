@@ -12,4 +12,9 @@ const withPWA = require('next-pwa')({
 
 module.exports = withPWA({
   // Tu configuración existente de Next.js
+  experimental: {
+    serverActions: {
+      allowedOrigin: ['cajeroenlinea.celtatsas.com.ar', 'celtatsas.com.ar'],
+    }
+  }
 });
